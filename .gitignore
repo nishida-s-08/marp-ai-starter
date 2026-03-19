@@ -1,9 +1,48 @@
-# macOS
+# OS files
 .DS_Store
+Thumbs.db
+.AppleDouble
+.LSOverride
 
-# Env
+# Environment and Secrets
 .env
+.env.local
+.env.*.local
 
-# Build outputs
+# Build and Output Directories
+# (Defined in GEMINI.md and README.md)
 dist/
 slide/
+slides/
+assets/images/
+!assets/images/CREDITS.md
+
+# File-specific ignores (Marp outputs if run manually in root)
+*.pdf
+*.html
+*.pptx
+*.png
+*.jpg
+*.jpeg
+*.gif
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Editor and Tool Specific
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+.gemini/tmp/
+.claudecode/
+
+# Ignore markdown slide files if they are meant to be unique per user
+# (Optional: If the project wants to keep templates only, but usually SAA roadmap etc. are okay to keep)
+# *-roadmap.md
+# my-*.md

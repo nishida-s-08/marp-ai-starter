@@ -65,7 +65,11 @@ Gemini CLI のカスタムコマンド `/slide` を使って、スライドのMa
 `scripts/build.sh` を実行して、生成されたMarkdownファイルをPDFとHTMLに変換します。
 
 ```bash
+# デフォルト: Marp組み込みテーマの影響を避けるため "default" テーマでビルド
 bash scripts/build.sh slide-deck.md
+
+# もし gaia テーマも併用したい場合は明示指定
+bash scripts/build.sh --theme gaia slide-deck.md
 ```
 
 成功すると、`dist/` ディレクトリに `slide-deck.pdf` と `slide-deck.html` が生成されます。

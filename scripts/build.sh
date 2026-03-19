@@ -14,13 +14,61 @@
 #   - marp-cli: `npm install -g @marp-team/marp-cli` でインストールしてください
 #   - カスタムテーマ用のローカル `style.css` ファイル
 
-# --- 設定 ---
-INPUT_FILE=$1
+# --- 設定/引数解析 ---
+# デフォルトは "default" テーマ（= gaia等の組み込みテーマCSSを使わない）
+# 必要な場合のみ --theme で明示的に指定する。
+THEME="default"
+
+usage() {
+  cat <<'USAGE'
+MarpのMarkdownファイルをPDFおよびHTML形式に変換します。
+
+使い方:
+  bash scripts/build.sh [--theme <theme>] <markdown_file>
+
+例:
+  bash scripts/build.sh slide-deck.md
+  bash scripts/build.sh --theme gaia slide-deck.md
+
+Note:
+  - テーマ未指定時は "default" を使用します。
+  - CSSは themes/base.css を必ず読み込み、themes/project.css があれば追加で読み込みます。
+USAGE
+}
+
+INPUT_FILE=""
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --theme)
+      shift
+      THEME="$1"
+      shift
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    --)
+      shift
+      break
+      ;;
+    -*)
+      echo "エラー: 不明なオプション: $1"
+      usage
+      exit 1
+      ;;
+    *)
+      INPUT_FILE="$1"
+      shift
+      ;;
+  esac
+done
+
 # 入力ファイルが指定されていない場合は終了
 if [ -z "${INPUT_FILE}" ]; then
-    echo "エラー: 入力Markdownファイルが指定されていません。"
-    echo "使い方: $0 <markdown_file>"
-    exit 1
+  echo "エラー: 入力Markdownファイルが指定されていません。"
+  usage
+  exit 1
 fi
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
@@ -30,7 +78,6 @@ OUTPUT_NAME=$(basename "${INPUT_FILE}" .md)
 OUTPUT_DIR="${REPO_ROOT}/dist"
 BASE_CSS_FILE="${REPO_ROOT}/themes/base.css"
 PROJECT_CSS_FILE="${REPO_ROOT}/themes/project.css"
-THEME="gaia"
 
 # --- 検証 ---
 # 入力ファイルの存在確認
@@ -49,6 +96,7 @@ fi
 
 # --- ビルドプロセス ---
 echo "${INPUT_FILE} のビルドプロセスを開始します..."
+echo "Theme: ${THEME}"
 
 # 出力ディレクトリが存在しない場合は作成
 mkdir -p "${OUTPUT_DIR}"

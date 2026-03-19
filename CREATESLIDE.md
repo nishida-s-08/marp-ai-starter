@@ -97,7 +97,11 @@ cp templates/base-slide.md my-talk.md
 
 #### PDF / HTML
 ```bash
+# デフォルト: Marp組み込みテーマの影響を避けるため "default" テーマでビルド
 bash scripts/build.sh slide-deck.md
+
+# もし gaia テーマも併用したい場合は明示指定
+bash scripts/build.sh --theme gaia slide-deck.md
 ```
 
 #### PPTX（PowerPoint）

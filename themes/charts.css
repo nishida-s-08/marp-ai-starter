@@ -1,311 +1,487 @@
 /*
- * charts.css — グラフ・KPIカード・データ可視化コンポーネント
- *
- * base.css / project.css と組み合わせて使用します。
- * build.sh に --stylesheet themes/charts.css を追加してください。
+ * ╔══════════════════════════════════════════════════════════════╗
+ * ║  ARK GRAPHICS — charts.css  [MODERN EDITION v2]             ║
+ * ║  グラフ・KPIカード・データ可視化コンポーネント               ║
+ * ║  base.css と組み合わせて使用。                              ║
+ * ╚══════════════════════════════════════════════════════════════╝
  *
  * ── 収録コンポーネント ──────────────────────────────────────
- *   .chart-wrap          : Chart.js canvas ラッパー
- *   .kpi-cards           : KPIカード横並び（数値を大きく表示）
- *   .kpi-card            : 個別KPIカード
- *   .data-table          : sample_slide.pdf 準拠テーブル強化版
- *   .callout             : 吹き出し風注釈（グラフ上のコールアウト）
- *   .chart-title         : グラフタイトル（左ボーダー付き）
- *   .two-charts          : 2グラフ横並びレイアウト
+ *   .chart-wrap          Chart.js canvas ラッパー
+ *   .two-charts          2グラフ横並びレイアウト
+ *   .chart-col           グラフカラム
+ *   .chart-title         グラフ小見出し（グロー左ボーダー）
+ *   .callout             コールアウト吹き出しバッジ
+ *   .callout-wrap        コールアウト複数横並び
+ *   .kpi-cards           KPIカードグリッド
+ *   .kpi-card            個別KPIカード
+ *   .data-table          達成率バッジ付きテーブル
+ *   .stat-row            横並びスタット        ← base.css に統合済み
+ *   .progress-list       プログレスバー        ← base.css に統合済み
+ *   .metric-card         大型メトリクスカード
+ *   .data-insight        インサイト行          ← base.css に統合済み
  * ──────────────────────────────────────────────────────────
  */
 
-/* ============================================================
+/* ================================================================
    Chart.js canvas ラッパー
-   ============================================================ */
+   ================================================================ */
 section .chart-wrap {
   position: relative;
   width: 100%;
-  margin-top: 12px;
+  margin-top: 9px;
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border-light, #eef1f8);
+  border-radius: var(--radius-lg, 8px);
+  padding: 13px 15px 11px;
+  box-shadow: var(--shadow-card, 0 1px 3px rgba(15,31,92,.06), 0 4px 16px rgba(15,31,92,.08));
+  overflow: hidden;
 }
 
-section .chart-wrap canvas {
-  max-width: 100%;
+/* 上辺グロスライン */
+section .chart-wrap::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(6, 182, 212, 0.42) 25%,
+    rgba(6, 182, 212, 0.42) 75%,
+    transparent 100%);
+  pointer-events: none;
 }
 
-/* ============================================================
-   2グラフ横並びレイアウト
-   ============================================================ */
+section .chart-wrap canvas { max-width: 100%; }
+
+/* ================================================================
+   2グラフ横並び
+   ================================================================ */
 section .two-charts {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
+  gap: 18px;
   align-items: start;
-  margin-top: 12px;
+  margin-top: 9px;
 }
 
 section .chart-col {
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
-/* ============================================================
+/* ================================================================
    グラフタイトル（小見出し）
-   ============================================================ */
+   ================================================================ */
 section .chart-title {
-  font-size: 0.82em;
+  font-size: 0.76em;
   font-weight: 700;
-  color: var(--color-primary, #1e2d6e);
-  letter-spacing: 0.04em;
-  margin-bottom: 8px;
-  padding-left: 8px;
-  border-left: 3px solid var(--color-accent, #2ab4b4);
+  color: var(--color-primary, #0f1f5c);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+  padding-left: 10px;
+  border-left: 2px solid var(--color-accent, #06b6d4);
+  position: relative;
+  font-family: var(--font-family-en, sans-serif);
 }
 
-/* ============================================================
-   吹き出しコールアウト（グラフ上の注釈）
-   sample_slide.pdf の「第5週：フィードバック導入後に引用増」風
-   ============================================================ */
+section .chart-title::before {
+  content: '';
+  position: absolute;
+  left: -1px; top: 0; bottom: 0;
+  width: 2px;
+  background: var(--color-accent, #06b6d4);
+  box-shadow: 0 0 10px rgba(6,182,212,0.55);
+  border-radius: 99px;
+}
+
+/* ================================================================
+   コールアウト吹き出し
+   ================================================================ */
 section .callout {
-  display: inline-block;
-  background: var(--color-primary, #1e2d6e);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--grad-primary, linear-gradient(135deg,#0f1f5c,#1e3a8a));
   color: #fff;
   border-radius: 999px;
-  padding: 5px 14px;
-  font-size: 0.72em;
+  padding: 4px 14px;
+  font-size: 0.68em;
   font-weight: 700;
-  letter-spacing: 0.04em;
-  margin-bottom: 6px;
+  letter-spacing: 0.05em;
+  margin-bottom: 5px;
   position: relative;
+  box-shadow: 0 2px 14px rgba(15,31,92,0.26);
+  font-family: var(--font-family-en, sans-serif);
 }
 
 section .callout::after {
   content: "";
   position: absolute;
-  bottom: -6px;
-  left: 50%;
+  bottom: -6px; left: 50%;
   transform: translateX(-50%);
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-top: 6px solid var(--color-primary, #1e2d6e);
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid #0f1f5c;
 }
 
 section .callout.accent {
-  background: var(--color-accent, #2ab4b4);
+  background: var(--grad-accent, linear-gradient(135deg,#06b6d4,#0891b2));
+  box-shadow: 0 2px 14px rgba(6,182,212,0.32);
 }
-section .callout.accent::after {
-  border-top-color: var(--color-accent, #2ab4b4);
+section .callout.accent::after { border-top-color: #0891b2; }
+
+section .callout.warm {
+  background: var(--grad-warm, linear-gradient(135deg,#f59e0b,#d97706));
+  box-shadow: 0 2px 14px rgba(245,158,11,0.32);
+}
+section .callout.warm::after { border-top-color: #d97706; }
+
+section .callout.success {
+  background: var(--grad-success, linear-gradient(135deg,#10b981,#059669));
+  box-shadow: 0 2px 14px rgba(16,185,129,0.30);
+}
+section .callout.success::after { border-top-color: #059669; }
+
+section .callout-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 5px;
+  flex-wrap: wrap;
 }
 
-/* ============================================================
-   KPIカード（数値を大きく表示）
-   ============================================================ */
+/* ================================================================
+   KPIカード
+   ================================================================ */
 section .kpi-cards {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-  margin-top: 14px;
+  gap: 11px;
+  margin-top: 11px;
 }
 
-section .kpi-cards.cols-3 {
-  grid-template-columns: repeat(3, 1fr);
-}
-
-section .kpi-cards.cols-2 {
-  grid-template-columns: repeat(2, 1fr);
-}
+section .kpi-cards.cols-2 { grid-template-columns: repeat(2, 1fr); }
+section .kpi-cards.cols-3 { grid-template-columns: repeat(3, 1fr); }
+section .kpi-cards.cols-5 { grid-template-columns: repeat(5, 1fr); }
 
 section .kpi-card {
   background: var(--color-surface, #fff);
-  border: 1px solid var(--color-border, #d6dce8);
-  border-top: 3px solid var(--color-primary, #1e2d6e);
-  border-radius: 4px;
-  padding: 14px 16px 12px;
-  box-shadow: 0 2px 12px rgba(30,45,110,0.07);
+  border: 1px solid var(--color-border-light, #eef1f8);
+  border-radius: var(--radius-lg, 8px);
+  padding: 13px 15px 12px;
+  box-shadow: var(--shadow-card, 0 1px 3px rgba(15,31,92,.06), 0 4px 16px rgba(15,31,92,.08));
+  position: relative;
+  overflow: hidden;
 }
 
-section .kpi-card.accent {
-  border-top-color: var(--color-accent, #2ab4b4);
+/* 上部カラーバー */
+section .kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--grad-primary, linear-gradient(135deg,#0f1f5c,#1e3a8a));
+  border-radius: var(--radius-lg, 8px) var(--radius-lg, 8px) 0 0;
 }
-section .kpi-card.positive {
-  border-top-color: #3fba89;
+
+/* グロス光沢 */
+section .kpi-card::after {
+  content: '';
+  position: absolute;
+  top: 3px; left: 0; right: 0;
+  height: 40%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.48) 0%, transparent 100%);
+  pointer-events: none;
 }
-section .kpi-card.negative {
-  border-top-color: #e05a5a;
-}
+
+section .kpi-card.accent::before  { background: var(--grad-accent,  linear-gradient(135deg,#06b6d4,#0891b2)); box-shadow: 0 0 14px rgba(6,182,212,0.40); }
+section .kpi-card.positive::before{ background: var(--grad-success, linear-gradient(135deg,#10b981,#059669)); box-shadow: 0 0 14px rgba(16,185,129,0.32); }
+section .kpi-card.negative::before{ background: var(--grad-danger,  linear-gradient(135deg,#ef4444,#dc2626)); box-shadow: 0 0 14px rgba(239,68,68,0.32); }
+section .kpi-card.warm::before    { background: var(--grad-warm,    linear-gradient(135deg,#f59e0b,#d97706)); box-shadow: 0 0 14px rgba(245,158,11,0.32); }
 
 section .kpi-card .kpi-label {
-  font-size: 0.7em;
-  font-weight: 600;
-  color: var(--color-muted, #8892a4);
-  letter-spacing: 0.08em;
+  font-size: 0.62em;
+  font-weight: 700;
+  color: var(--color-muted, #7c87a0);
+  letter-spacing: 0.11em;
   text-transform: uppercase;
   margin-bottom: 4px;
   font-family: var(--font-family-en, sans-serif);
 }
 
 section .kpi-card .kpi-value {
-  font-size: 2em;
+  font-size: 2.05em;
   font-weight: 800;
-  color: var(--color-primary, #1e2d6e);
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  color: var(--color-primary, #0f1f5c);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
   font-family: var(--font-family-en, sans-serif);
 }
 
-section .kpi-card.accent .kpi-value { color: var(--color-accent, #2ab4b4); }
-section .kpi-card.positive .kpi-value { color: #3fba89; }
-section .kpi-card.negative .kpi-value { color: #e05a5a; }
+section .kpi-card.accent   .kpi-value { color: #0891b2; }
+section .kpi-card.positive .kpi-value { color: #059669; }
+section .kpi-card.negative .kpi-value { color: #dc2626; }
+section .kpi-card.warm     .kpi-value { color: #d97706; }
 
 section .kpi-card .kpi-unit {
-  font-size: 0.6em;
+  font-size: 0.50em;
   font-weight: 600;
-  color: var(--color-muted, #8892a4);
+  color: var(--color-muted, #7c87a0);
   margin-left: 2px;
+  vertical-align: text-top;
+  line-height: 2.3;
 }
 
 section .kpi-card .kpi-sub {
-  font-size: 0.72em;
-  color: var(--color-muted, #8892a4);
-  margin-top: 2px;
+  font-size: 0.68em;
+  color: var(--color-muted, #7c87a0);
+  margin-top: 3px;
+  line-height: 1.42;
 }
 
 section .kpi-card .kpi-delta {
-  font-size: 0.75em;
+  font-size: 0.70em;
   font-weight: 700;
-  margin-top: 4px;
+  margin-top: 5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-family: var(--font-family-en, sans-serif);
 }
-section .kpi-card .kpi-delta.up   { color: #3fba89; }
-section .kpi-card .kpi-delta.down { color: #e05a5a; }
+section .kpi-card .kpi-delta.up   { color: #059669; background: rgba(16,185,129,0.10); }
+section .kpi-card .kpi-delta.down { color: #dc2626; background: rgba(239,68,68,0.10); }
 section .kpi-card .kpi-delta.up::before   { content: "▲ "; }
 section .kpi-card .kpi-delta.down::before { content: "▼ "; }
 
-/* ============================================================
-   データテーブル強化版（sample_slide.pdf 準拠）
-   ============================================================ */
-section .data-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.82em;
-  margin-top: 12px;
+/* ================================================================
+   大型メトリクスカード（ダーク背景）
+   ================================================================ */
+section .metric-card {
+  background: var(--grad-primary, linear-gradient(135deg,#0f1f5c,#1e3a8a));
+  color: #fff;
+  border-radius: var(--radius-lg, 8px);
+  padding: 18px 22px 16px;
+  box-shadow: var(--shadow-card-lg, 0 2px 8px rgba(15,31,92,.08), 0 16px 48px rgba(15,31,92,.13));
+  position: relative;
+  overflow: hidden;
 }
 
-section .data-table th {
-  background: var(--color-primary, #1e2d6e);
+section .metric-card::before {
+  content: '';
+  position: absolute;
+  top: -44px; right: -44px;
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: rgba(6,182,212,0.14);
+}
+
+section .metric-card.accent {
+  background: var(--grad-accent, linear-gradient(135deg,#06b6d4,#0891b2));
+}
+
+section .metric-card .mc-label {
+  font-size: 0.63em;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.60);
+  font-family: var(--font-family-en, sans-serif);
+  margin-bottom: 5px;
+}
+
+section .metric-card .mc-value {
+  font-size: 2.9em;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
   color: #fff;
-  padding: 8px 14px;
-  text-align: left;
-  font-weight: 600;
-  letter-spacing: 0.05em;
   font-family: var(--font-family-en, sans-serif);
 }
 
-section .data-table th.accent { background: var(--color-accent, #2ab4b4); }
+section .metric-card .mc-value span {
+  font-size: 0.44em;
+  color: rgba(255,255,255,0.68);
+  font-weight: 600;
+  vertical-align: super;
+  margin-left: 2px;
+}
+
+section .metric-card .mc-sub {
+  font-size: 0.76em;
+  color: rgba(255,255,255,0.62);
+  margin-top: 7px;
+}
+
+/* ================================================================
+   データテーブル（badge / num / accent ヘッダー）
+   ================================================================ */
+section .data-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.79em;
+  margin-top: 9px;
+  border-radius: var(--radius-lg, 8px);
+  overflow: hidden;
+  box-shadow: var(--shadow-card, 0 1px 3px rgba(15,31,92,.06), 0 4px 16px rgba(15,31,92,.08));
+}
+
+section .data-table th {
+  background: var(--grad-primary, linear-gradient(135deg,#0f1f5c,#1e3a8a));
+  color: #fff;
+  padding: 9px 14px;
+  text-align: left;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  font-family: var(--font-family-en, sans-serif);
+  font-size: 0.86em;
+  text-transform: uppercase;
+}
+
+section .data-table th.accent {
+  background: var(--grad-accent, linear-gradient(135deg,#06b6d4,#0891b2));
+}
 
 section .data-table td {
   padding: 9px 14px;
-  border-bottom: 1px solid var(--color-border, #d6dce8);
-  color: var(--color-foreground, #2c2c2c);
+  border-bottom: 1px solid var(--color-border-light, #eef1f8);
+  color: var(--color-foreground, #1a1f36);
   vertical-align: middle;
+  background: var(--color-surface, #fff);
 }
 
-section .data-table tr:nth-child(even) td {
-  background: #f0f3f8;
-}
+section .data-table tr:nth-child(even) td { background: var(--color-surface-alt, #f7f9fd); }
+section .data-table tr:last-child td { border-bottom: none; }
 
-/* 数値セル（右寄せ） */
 section .data-table td.num,
 section .data-table th.num {
   text-align: right;
   font-family: var(--font-family-en, sans-serif);
   font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
 /* 達成率バッジ */
 section .data-table .badge {
   display: inline-block;
-  padding: 2px 8px;
+  padding: 2px 9px;
   border-radius: 999px;
-  font-size: 0.85em;
+  font-size: 0.80em;
   font-weight: 700;
   font-family: var(--font-family-en, sans-serif);
+  letter-spacing: 0.04em;
 }
-section .data-table .badge.over   { background: #dcf5eb; color: #1a8a50; }
-section .data-table .badge.meet   { background: #dceeff; color: #1a4a8a; }
-section .data-table .badge.under  { background: #fde8e8; color: #a02020; }
+section .data-table .badge.over  { background: rgba(16,185,129,0.11); color: #059669; border: 1px solid rgba(16,185,129,0.26); }
+section .data-table .badge.meet  { background: rgba(6,182,212,0.10);  color: #0891b2; border: 1px solid rgba(6,182,212,0.26);  }
+section .data-table .badge.under { background: rgba(239,68,68,0.10);  color: #dc2626; border: 1px solid rgba(239,68,68,0.24);  }
 
-/* ============================================================
-   画像レイアウト（Marp インライン画像 / fetch-image.sh 連携）
-   ============================================================ */
-
-/* .cols 内のインライン画像: コンテナ幅いっぱいに広がる */
+/* ================================================================
+   画像レイアウト補助（chart用）
+   ================================================================ */
 section .cols img,
 section .cols-half img {
   width: 100%;
   height: auto;
   display: block;
-  border-radius: 4px;
+  border-radius: var(--radius-lg, 8px);
   object-fit: cover;
+  box-shadow: var(--shadow-card, 0 1px 3px rgba(15,31,92,.06), 0 4px 16px rgba(15,31,92,.08));
 }
 
-/* 高さが指定された画像コンテナ内では object-fit で切り抜き */
 section .img-wrap {
   overflow: hidden;
-  border-radius: 4px;
+  border-radius: var(--radius-lg, 8px);
+  box-shadow: var(--shadow-card, 0 1px 3px rgba(15,31,92,.06), 0 4px 16px rgba(15,31,92,.08));
+  position: relative;
 }
-section .img-wrap img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+section .img-wrap::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-accent, #06b6d4), transparent);
+  z-index: 1;
 }
+section .img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-/* img-placeholder: 高さを cols 内での使用に合わせてレスポンシブに */
 section .img-placeholder {
-  background: #e8ecf5;
-  border: 2px dashed var(--color-border, #d6dce8);
-  border-radius: 4px;
+  background: linear-gradient(145deg, #eef1f8, #e2e8f5);
+  border: 2px dashed var(--color-border, #dde3ef);
+  border-radius: var(--radius-lg, 8px);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: var(--color-muted, #8892a4);
-  font-size: 0.78em;
+  color: var(--color-muted, #7c87a0);
+  font-size: 0.73em;
   font-style: italic;
   min-height: 140px;
   height: 100%;
   text-align: center;
   padding: 16px;
-  gap: 6px;
+  gap: 7px;
+  line-height: 1.6;
 }
 
-/* ============================================================
+/* ================================================================
    テーブルレイアウト補助
-   ============================================================ */
-
-/* .cols 内のテーブル: 左カラムに表、右カラムにグラフ等 */
+   ================================================================ */
 section .cols .data-table,
-section .cols table {
-  margin-top: 0;
-}
+section .cols table { margin-top: 0; }
 
-/* テーブルとグラフの横並びレイアウト */
 section .table-chart {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
+  gap: 18px;
   align-items: start;
-  margin-top: 12px;
+  margin-top: 9px;
 }
 
-/* ============================================================
-   グラフ内テキスト注釈（コールアウト改善）
-   ============================================================ */
-
-/* コールアウトをグラフの上に重ねる用途に対応 */
-section .chart-col {
-  position: relative;
-}
-
-section .callout-wrap {
+/* ================================================================
+   スパークライン行（テキスト + 小グラフ + 数値インライン）
+   ================================================================ */
+section .sparkline-row {
   display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  margin-bottom: 6px;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 12px;
+  background: var(--color-surface, #fff);
+  border-radius: var(--radius-md, 6px);
+  border: 1px solid var(--color-border-light, #eef1f8);
+  margin-bottom: 5px;
 }
+section .sparkline-row .sp-name  { font-size: 0.76em; font-weight: 600; min-width: 78px; flex-shrink: 0; color: var(--color-foreground,#1a1f36); }
+section .sparkline-row .sp-chart { flex: 1; height: 26px; position: relative; overflow: hidden; }
+section .sparkline-row .sp-val   { font-size: 0.84em; font-weight: 800; min-width: 48px; text-align: right; font-family: var(--font-family-en,sans-serif); color: var(--color-primary,#0f1f5c); }
+section .sparkline-row .sp-delta { font-size: 0.66em; font-weight: 700; min-width: 42px; text-align: right; font-family: var(--font-family-en,sans-serif); }
+section .sparkline-row .sp-delta.up   { color: #059669; }
+section .sparkline-row .sp-delta.down { color: #dc2626; }
+section .sparkline-row .sp-delta.up::before   { content: "▲ "; }
+section .sparkline-row .sp-delta.down::before { content: "▼ "; }
+
+/* ================================================================
+   トレンドテーブル
+   ================================================================ */
+section .trend-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.79em;
+  margin-top: 9px;
+  border-radius: var(--radius-lg, 8px);
+  overflow: hidden;
+  box-shadow: var(--shadow-card, 0 1px 3px rgba(15,31,92,.06), 0 4px 16px rgba(15,31,92,.08));
+}
+section .trend-table th { background: var(--grad-primary,linear-gradient(135deg,#0f1f5c,#1e3a8a)); color: rgba(255,255,255,0.88); padding: 8px 12px; font-size: 0.80em; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; font-family: var(--font-family-en,sans-serif); }
+section .trend-table td { padding: 8px 12px; background: var(--color-surface,#fff); border-bottom: 1px solid var(--color-border-light,#eef1f8); font-family: var(--font-family-en,sans-serif); font-weight: 600; }
+section .trend-table tr:nth-child(even) td { background: var(--color-surface-alt,#f7f9fd); }
+section .trend-table tr:last-child td { border-bottom: none; }
+section .trend-table .tt-up   { color: #059669; font-weight: 700; }
+section .trend-table .tt-down { color: #dc2626; font-weight: 700; }
+section .trend-table .tt-flat { color: var(--color-muted,#7c87a0); }
+section .trend-table .tt-up::before   { content: "▲ "; font-size: 0.78em; }
+section .trend-table .tt-down::before { content: "▼ "; font-size: 0.78em; }
+section .trend-table .tt-flat::before { content: "— "; }

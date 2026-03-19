@@ -1,0 +1,102 @@
+/* ============================================================
+   project.css — プロジェクトごとのカスタマイズ
+   ============================================================
+   このファイルだけ編集して、配色・フォント・装飾を切り替えます。
+   base.css は触らないでください。
+
+   ── カスタマイズ手順 ──────────────────────────────────────
+   1. 下の「カラーセット」から使いたいテーマをコピーして
+      :root { } ブロックに貼り付けるだけでOK
+   2. フォントを変えたい場合は --font-family-* を上書き
+   3. ドットデコレーションの色は --deco-dot-* を上書き
+   ──────────────────────────────────────────────────────────
+
+   ── プリセットカラーセット ────────────────────────────────
+
+   【A】ARK GRAPHICS デフォルト（sample_slide.pdf 準拠）
+       --color-primary:    #1e2d6e;
+       --color-accent:     #2ab4b4;
+       --color-background: #f4f6fb;
+       --color-foreground: #2c2c2c;
+
+   【B】モノクロ / コーポレートグレー
+       --color-primary:    #1a1a1a;
+       --color-accent:     #5a5a5a;
+       --color-background: #f7f7f7;
+       --color-foreground: #2c2c2c;
+       --left-accent-color: #1a1a1a;
+
+   【C】グリーン（環境・サステナビリティ）
+       --color-primary:    #1b4d35;
+       --color-accent:     #2d9e6b;
+       --color-background: #f4f9f5;
+       --color-foreground: #1a2e20;
+       --color-surface:    #ffffff;
+       --deco-dot-1: #a8c9b4;
+       --deco-dot-2: #5baa80;
+       --deco-dot-3: #2d7a50;
+       --deco-dot-4: #1b4d35;
+
+   【D】ウォームオレンジ（スタートアップ・カジュアル）
+       --color-primary:    #c0440a;
+       --color-accent:     #e87d3e;
+       --color-background: #fffaf5;
+       --color-foreground: #2c1800;
+       --color-surface:    #ffffff;
+       --deco-dot-1: #f0c4a0;
+       --deco-dot-2: #e89e6a;
+       --deco-dot-3: #d06030;
+       --deco-dot-4: #c0440a;
+
+   【E】パープル（テック・AI）
+       --color-primary:    #3a1a6e;
+       --color-accent:     #7c3aed;
+       --color-background: #f8f5ff;
+       --color-foreground: #1a0a2e;
+       --color-surface:    #ffffff;
+       --deco-dot-1: #c4b0e8;
+       --deco-dot-2: #9070cc;
+       --deco-dot-3: #6040aa;
+       --deco-dot-4: #3a1a6e;
+
+   ────────────────────────────────────────────────────────── */
+
+:root {
+  /* ── ここを編集してカスタマイズ ── */
+
+  /* 例: ARK GRAPHICS デフォルトをそのまま使う場合はコメントアウトのまま */
+
+  /* --color-primary:    #1e2d6e; */
+  /* --color-accent:     #2ab4b4; */
+  /* --color-background: #f4f6fb; */
+  /* --color-foreground: #2c2c2c; */
+  /* --color-surface:    #ffffff; */
+
+  /* フォントを変える場合（Google Fonts 等は build.sh で @import する） */
+  /* --font-family-main:    'Noto Sans JP', sans-serif; */
+  /* --font-family-heading: 'Noto Sans JP', sans-serif; */
+
+  /* ドットデコレーションの色 */
+  /* --deco-dot-1: #b0b8cc; */
+  /* --deco-dot-2: #7485aa; */
+  /* --deco-dot-3: #3a5096; */
+  /* --deco-dot-4: #1e2d6e; */
+
+  /* 左ボーダーアクセントの色 */
+  /* --left-accent-color: var(--color-primary); */
+
+  /* ISSUEラベル色 */
+  /* --color-issue: #e05a5a; */
+
+  /* VISIONラベル色 */
+  /* --color-vision: #5a7de0; */
+
+  /* TOPICラベル色 */
+  /* --color-topic: #2ab4b4; */
+
+  /* TIPSラベル色 */
+  /* --color-tips: #3fba89; */
+}
+
+/* ── プロジェクト固有のスタイル追加はここに書く ── */
+/* 例: ロゴを右上に固定表示したい場合など */

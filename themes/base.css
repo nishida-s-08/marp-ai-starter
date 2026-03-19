@@ -1,0 +1,685 @@
+/* @theme ark-base */
+
+/*
+ * ARK GRAPHICS スライドデザイン準拠 ベースCSS
+ * sample_slide.pdf のデザインを忠実に再現
+ *
+ * ─── カラートークン ───────────────────────────────────────────
+ *   --color-primary      : メインネイビー（タイトル・見出し・強調）
+ *   --color-accent       : ティール（アクセント・英語タイトル・ハイライト）
+ *   --color-background   : スライド背景
+ *   --color-foreground   : 本文テキスト
+ *   --color-surface      : カード背景
+ *   --color-border       : ボーダー
+ *   --color-muted        : 補足テキスト
+ *   --color-issue        : ISSUEラベル
+ *   --color-vision       : VISIONラベル
+ *   --color-topic        : TOPICラベル
+ *   --color-tips         : TIPSラベル
+ * ─────────────────────────────────────────────────────────────
+ */
+
+:root {
+  /* ── コアカラー（sample_slide.pdf 準拠） ── */
+  --color-primary:    #1e2d6e;   /* ネイビー: 見出し・強調 */
+  --color-accent:     #2ab4b4;   /* ティール: アクセント・サブタイトル */
+  --color-background: #f4f6fb;   /* 薄グレー背景 */
+  --color-foreground: #2c2c2c;   /* 本文 */
+  --color-surface:    #ffffff;   /* カード背景 */
+  --color-border:     #d6dce8;   /* ボーダー */
+  --color-muted:      #8892a4;   /* 補足・英語サブタイトル */
+
+  /* ── ラベルカラー ── */
+  --color-issue:  #e05a5a;   /* ISSUE: 赤系 */
+  --color-vision: #5a7de0;   /* VISION: ブルー系（primary寄り） */
+  --color-topic:  #2ab4b4;   /* TOPIC: ティール */
+  --color-tips:   #3fba89;   /* TIPS: グリーン */
+
+  /* ── 右上デコレーションドット（4色） ── */
+  --deco-dot-1: #b0b8cc;   /* 薄グレー */
+  --deco-dot-2: #7485aa;   /* ミドルグレー */
+  --deco-dot-3: #3a5096;   /* ミドルネイビー */
+  --deco-dot-4: #1e2d6e;   /* ダークネイビー */
+
+  /* ── タイポグラフィ ── */
+  --font-family-main:    'Montserrat', 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;
+  --font-family-heading: 'Montserrat', 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;
+  --font-family-en:      'Montserrat', 'Avenir Next', 'Helvetica Neue', sans-serif;
+
+  /* ── スペーシング ── */
+  --slide-padding-x: 56px;
+  --slide-padding-y: 44px;
+  --radius-lg: 4px;    /* sample_slide は角丸が控えめ */
+  --radius-md: 4px;
+  --shadow-card: 0 2px 12px rgba(30, 45, 110, 0.08);
+
+  /* ── ヘッダーバー ── */
+  --header-height: 48px;
+  --header-border-color: var(--color-primary);
+  --header-text-color:   var(--color-primary);
+  --header-en-color:     var(--color-accent);
+
+  /* ── セクション番号 ── */
+  --slide-no-size:  64px;
+  --slide-no-color: rgba(30, 45, 110, 0.08);
+
+  /* ── 左ボーダーアクセント（h2 / section-title） ── */
+  --left-accent-width: 4px;
+  --left-accent-color: var(--color-primary);
+}
+
+/* ============================================================
+   ベースセクション
+   ============================================================ */
+section {
+  font-family: var(--font-family-main);
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  padding: var(--slide-padding-y) var(--slide-padding-x);
+  padding-top: calc(var(--slide-padding-y) + var(--header-height));
+  letter-spacing: 0.02em;
+  font-size: 0.92em;
+  line-height: 1.7;
+  position: relative;
+
+  /* 右上ドットデコレーション（SVGで描画） */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='20'%3E%3Crect x='0'  y='4' width='10' height='10' fill='%23b0b8cc'/%3E%3Crect x='14' y='4' width='10' height='10' fill='%237485aa'/%3E%3Crect x='28' y='4' width='10' height='10' fill='%233a5096'/%3E%3Crect x='42' y='4' width='10' height='10' fill='%231e2d6e'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: top 16px right var(--slide-padding-x);
+  background-size: 60px 20px;
+}
+
+/* ============================================================
+   ページヘッダーバー
+   sample_slide では「左: 日本語タイトル / 右: 英語サブタイトル + ドット」
+   → Marp の `header:` ディレクティブで挿入、または .page-header で手動指定
+   ============================================================ */
+section header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  display: flex;
+  align-items: flex-end;
+  padding: 0 var(--slide-padding-x) 8px;
+  border: none;
+  font-size: 0.75em;
+  background: transparent;
+  color: var(--header-text-color);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  font-family: var(--font-family-en);
+  bottom: unset;
+  text-align: left;
+  justify-content: space-between;
+}
+
+section header .header-en {
+  color: var(--header-en-color);
+  font-size: 0.9em;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   見出し
+   ============================================================ */
+h1, h2, h3 {
+  font-family: var(--font-family-heading);
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+/* タイトルスライド用 */
+h1 {
+  font-size: 2.8em;
+  text-align: left;
+  line-height: 1.2;
+}
+
+/* 通常スライド: 左ボーダーアクセント付き */
+h2 {
+  font-size: 1.4em;
+  border-left: var(--left-accent-width) solid var(--left-accent-color);
+  padding-left: 12px;
+  border-bottom: none;
+  margin-bottom: 0.6em;
+  line-height: 1.3;
+}
+
+h3 {
+  font-size: 1.1em;
+  color: var(--color-primary);
+  margin-bottom: 0.3em;
+}
+
+/* ============================================================
+   コンポーネント: ページ番号（大きい薄いナンバリング）
+   ============================================================ */
+section .slide-no {
+  position: absolute;
+  top: 4px;
+  left: var(--slide-padding-x);
+  font-family: var(--font-family-en);
+  font-weight: 700;
+  font-size: var(--slide-no-size);
+  line-height: 1;
+  color: var(--slide-no-color);
+  letter-spacing: 0.04em;
+  z-index: 0;
+}
+
+/* ============================================================
+   コンポーネント: 英語サブタイトル（ページヘッダー右側用）
+   ============================================================ */
+section .subtitle-en {
+  display: inline-block;
+  margin-top: 4px;
+  font-size: 0.78em;
+  font-weight: 600;
+  color: var(--color-accent);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-family: var(--font-family-en);
+}
+
+/* ============================================================
+   コンポーネント: ラベルバッジ（ISSUE / VISION / TOPIC / TIPS）
+   sample_slide では角丸控えめの横長バッジ
+   ============================================================ */
+section .label {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 2px;
+  font-size: 0.7em;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #fff;
+  font-family: var(--font-family-en);
+}
+section .label.issue  { background: var(--color-issue); }
+section .label.vision { background: var(--color-vision); }
+section .label.topic  { background: var(--color-topic); }
+section .label.tips   { background: var(--color-tips); }
+
+/* ============================================================
+   コンポーネント: カード（.cards / .card）
+   sample_slide のカード: 角丸控えめ, 左ボーダーアクセント, 白背景
+   ============================================================ */
+section .cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+
+section .card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-primary);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px 14px;
+  box-shadow: var(--shadow-card);
+}
+
+section .card.before { border-left-color: #8892a4; }
+section .card.action { border-left-color: var(--color-primary); }
+section .card.after  { border-left-color: var(--color-accent); }
+
+section .card > .card-title {
+  font-weight: 800;
+  font-size: 0.9em;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+  font-family: var(--font-family-en);
+}
+
+section .card.before > .card-title { color: #8892a4; }
+section .card.action > .card-title { color: var(--color-primary); }
+section .card.after  > .card-title { color: var(--color-accent); }
+
+section .card ul {
+  margin: 0;
+  padding-left: 1.2em;
+  font-size: 0.88em;
+  line-height: 1.65;
+}
+
+/* ============================================================
+   コンポーネント: ISSUEブロック（課題リスト）
+   sample_slide: 番号付き左ボーダーボックス
+   ============================================================ */
+section .issue-block {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0 16px;
+  align-items: stretch;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-issue);
+  border-radius: var(--radius-lg);
+  padding: 14px 18px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow-card);
+}
+
+section .issue-block .issue-no {
+  font-family: var(--font-family-en);
+  font-size: 0.65em;
+  font-weight: 700;
+  color: var(--color-issue);
+  letter-spacing: 0.08em;
+  text-align: center;
+  line-height: 1.1;
+  padding-top: 2px;
+}
+section .issue-block .issue-no span {
+  display: block;
+  font-size: 1.6em;
+}
+
+section .issue-block .issue-title {
+  font-weight: 700;
+  color: var(--color-primary);
+  font-size: 0.95em;
+  margin-bottom: 4px;
+}
+
+section .issue-block ul {
+  margin: 0;
+  padding-left: 1.2em;
+  font-size: 0.85em;
+  line-height: 1.6;
+  color: var(--color-foreground);
+}
+
+/* ============================================================
+   コンポーネント: VISIONブロック（下半期展望など）
+   sample_slide: 楕円ボタン風の横長ハイライト
+   ============================================================ */
+section .vision-block {
+  border: 2px solid var(--color-accent);
+  border-radius: 999px;
+  padding: 10px 28px;
+  margin: 8px 0 4px;
+  font-size: 0.95em;
+  font-weight: 700;
+  color: var(--color-accent);
+  text-align: center;
+  letter-spacing: 0.04em;
+  background: transparent;
+}
+
+section .vision-note {
+  font-size: 0.82em;
+  color: var(--color-foreground);
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 8px;
+  letter-spacing: 0.03em;
+}
+
+section .vision-label {
+  font-family: var(--font-family-en);
+  font-size: 0.7em;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: 0.1em;
+  margin-bottom: 2px;
+}
+
+section .vision-title {
+  font-size: 1em;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 4px;
+}
+
+/* ============================================================
+   コンポーネント: 2カラムレイアウト
+   ============================================================ */
+section .cols {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 24px;
+  align-items: start;
+}
+
+section .cols-half {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ============================================================
+   コンポーネント: Before / Action / Tips / After ステップ型
+   sample_slide: 縦に連なるボックス、左にラベル・右に内容
+   ============================================================ */
+section .step-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+section .step-item {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 0 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-primary);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+section .step-item.before { border-left-color: #8892a4; }
+section .step-item.action { border-left-color: var(--color-primary); }
+section .step-item.tips   { border-left-color: var(--color-topic); }
+section .step-item.after  { border-left-color: var(--color-accent); }
+
+section .step-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 8px;
+  font-family: var(--font-family-en);
+  font-size: 0.75em;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #8892a4;
+  border-right: 1px solid var(--color-border);
+  background: #f8f9fc;
+  text-align: center;
+}
+
+section .step-item.before .step-label { color: #8892a4; }
+section .step-item.action .step-label { color: var(--color-primary); }
+section .step-item.tips   .step-label { color: var(--color-topic); }
+section .step-item.after  .step-label { color: var(--color-accent); }
+
+section .step-content {
+  padding: 10px 16px;
+}
+
+section .step-content .step-title {
+  font-weight: 700;
+  font-size: 0.9em;
+  color: var(--color-primary);
+  margin-bottom: 4px;
+}
+
+section .step-content ul {
+  margin: 0;
+  padding-left: 1.2em;
+  font-size: 0.84em;
+  line-height: 1.6;
+}
+
+/* ============================================================
+   コンポーネント: トピックカード（3列, TOPICラベル付き）
+   sample_slide の実績サマリーページ
+   ============================================================ */
+section .topic-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+
+section .topic-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-lg);
+  padding: 18px 16px 16px;
+  box-shadow: var(--shadow-card);
+}
+
+section .topic-card .tc-label {
+  font-family: var(--font-family-en);
+  font-size: 0.7em;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: 0.12em;
+  margin-bottom: 6px;
+}
+section .topic-card:nth-child(2) .tc-label { color: var(--color-accent); }
+section .topic-card:nth-child(3) .tc-label { color: #5a7de0; }
+
+section .topic-card .tc-title {
+  font-weight: 700;
+  font-size: 0.95em;
+  color: var(--color-primary);
+  margin-bottom: 6px;
+}
+section .topic-card:nth-child(2) .tc-title { color: var(--color-accent); }
+section .topic-card:nth-child(3) .tc-title { color: #5a7de0; }
+
+section .topic-card .tc-tag {
+  display: inline-block;
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: 999px;
+  font-size: 0.68em;
+  padding: 3px 10px;
+  margin-bottom: 8px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+section .topic-card:nth-child(2) .tc-tag { background: var(--color-accent); }
+section .topic-card:nth-child(3) .tc-tag { background: #5a7de0; }
+
+section .topic-card p {
+  font-size: 0.82em;
+  line-height: 1.6;
+  color: var(--color-foreground);
+  margin: 0;
+}
+
+/* ============================================================
+   コンポーネント: 書き方ガイド（薄い枠・斜体）
+   ============================================================ */
+section .guide {
+  margin-top: 12px;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  border: 1px dashed #c0c8d8;
+  background: #f8faff;
+  color: #8892a4;
+  font-size: 0.8em;
+  font-style: italic;
+}
+
+/* ============================================================
+   タイトルスライド専用
+   ============================================================ */
+section.title-slide {
+  background-color: var(--color-background);
+  padding: var(--slide-padding-y) var(--slide-padding-x);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+section.title-slide h1 {
+  font-size: 3em;
+  line-height: 1.15;
+  margin-bottom: 0.1em;
+}
+
+section.title-slide .title-subtitle {
+  display: inline-block;
+  background: var(--color-primary);
+  color: #fff;
+  padding: 6px 18px;
+  font-size: 0.95em;
+  font-weight: 600;
+  margin-bottom: 24px;
+  letter-spacing: 0.04em;
+}
+
+section.title-slide .title-meta {
+  font-size: 0.82em;
+  color: var(--color-muted);
+  margin-top: 0;
+  border-top: 1px solid var(--color-border);
+  padding-top: 10px;
+}
+
+/* ============================================================
+   セクション区切りスライド専用
+   sample_slide の「01 概要と報告の目的」ページ
+   ============================================================ */
+section.section-slide {
+  background-color: var(--color-background);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+section.section-slide .sec-no {
+  font-family: var(--font-family-en);
+  font-size: 3.5em;
+  font-weight: 700;
+  color: var(--color-primary);
+  opacity: 0.18;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+section.section-slide hr {
+  border: none;
+  border-top: 2px solid var(--color-primary);
+  margin: 0 0 16px;
+}
+
+section.section-slide h2 {
+  font-size: 2em;
+  border-left: none;
+  padding-left: 0;
+  color: var(--color-primary);
+}
+
+/* ============================================================
+   テーブルスタイル
+   ============================================================ */
+section table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85em;
+  margin-top: 12px;
+}
+
+section table th {
+  background: var(--color-primary);
+  color: #fff;
+  padding: 8px 12px;
+  text-align: left;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+section table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-foreground);
+}
+
+section table tr:nth-child(even) td {
+  background: #f0f3f8;
+}
+
+/* ============================================================
+   コードブロック
+   ============================================================ */
+pre {
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: 1em;
+  font-size: 0.8em;
+}
+
+/* ============================================================
+   フッター（ページ番号など）
+   ============================================================ */
+section footer {
+  position: absolute;
+  bottom: 14px;
+  right: var(--slide-padding-x);
+  left: var(--slide-padding-x);
+  font-size: 0.65em;
+  color: var(--color-muted);
+  text-align: right;
+  border: none;
+  background: transparent;
+}
+
+/* ============================================================
+   ページネーション（Marp paginate）
+   ============================================================ */
+section::after {
+  color: var(--color-muted);
+  font-size: 0.65em;
+  font-family: var(--font-family-en);
+}
+
+/* ============================================================
+   リスト
+   ============================================================ */
+section ul, section ol {
+  padding-left: 1.4em;
+  line-height: 1.75;
+}
+
+section li {
+  margin-bottom: 0.2em;
+}
+
+/* チェックマーク風リスト（sample_slide の ☑ スタイル） */
+section ul.check-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+section ul.check-list li::before {
+  content: "✓";
+  display: inline-block;
+  width: 1.4em;
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+/* 番号付き強調リスト（提案資料01/02/03スタイル） */
+section ol.highlight-list {
+  list-style: none;
+  padding-left: 0;
+  counter-reset: hl-counter;
+}
+
+section ol.highlight-list li {
+  counter-increment: hl-counter;
+  display: grid;
+  grid-template-columns: 2em 1fr;
+  gap: 0 8px;
+  align-items: baseline;
+  font-size: 0.92em;
+  padding: 4px 0;
+}
+
+section ol.highlight-list li::before {
+  content: "0" counter(hl-counter);
+  font-family: var(--font-family-en);
+  font-weight: 700;
+  color: var(--color-accent);
+  font-size: 0.9em;
+  letter-spacing: 0.06em;
+}
+
+section ol.highlight-list li strong {
+  color: var(--color-primary);
+  font-weight: 700;
+}

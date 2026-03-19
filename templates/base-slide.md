@@ -4,21 +4,32 @@ theme: default
 paginate: true
 ---
 
+<!-- Chart.js CDN: グラフを使うスライドがある場合は必須。使わない場合は削除可 -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+
 <!--
 このファイルは「14〜15枚LT」の埋めるだけテンプレートです。
 sample_slide.pdf のデザインコンポーネントに対応しています。
 
-- スライド区切りは `<!-- スライド区切り -->`
-- ラベル/カード/ステップ等は themes/base.css のコンポーネントを使用
-- 配色・フォントのカスタマイズは themes/project.css のみ編集
+━━ 重要: テーマとCSSの関係 ━━━━━━━━━━━━━━━━━━━━━━
+  theme: default  ← gaia はカスタムCSSを強制上書きするため使わない
+  スタイルはすべて themes/base.css / charts.css / project.css で制御
 
-使い方:
-1) このファイルをコピーして作業用にリネーム
-2) `[...]` を埋める
-3) `bash scripts/build.sh <file>.md`
+━━ スライド区切り ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  --- （Marp 正式記法）を使う
+
+━━ カスタマイズ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  配色・フォント → themes/project.css のみ編集
+  グラフ・KPI・表 → SNIPPETS.md からコピペ
+
+━━ 使い方 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  1) このファイルをコピーしてリネーム
+  2) [...]を埋める
+  3) bash scripts/build.sh <file>.md         ← 通常ビルド
+     bash scripts/build.sh <file>.md --fetch ← 画像自動取得＋ビルド
 -->
 
-<!-- スライド区切り -->
+---
 
 <!-- _class: title-slide -->
 
@@ -30,19 +41,19 @@ sample_slide.pdf のデザインコンポーネントに対応しています。
 
 <div class="title-meta">作成者：[名前]　　作成日：[日付]</div>
 
-<!-- スライド区切り -->
+---
 
 <!-- _class: section-slide -->
 
 <div class="sec-no">01</div>
 
----
+<hr>
 
 ## 今日話すこと
 
-<!-- スライド区切り -->
+---
 
-<header><span>[スライドタイトル（日本語）]</span><span class="header-en">Agenda</span></header>
+<header><span>[スライドタイトル]</span><span class="header-en">Agenda</span></header>
 
 ## 今日話すこと
 
@@ -55,9 +66,9 @@ sample_slide.pdf のデザインコンポーネントに対応しています。
   <li><strong>[得られた学び]</strong> ── [一言メモ]</li>
 </ol>
 
-<!-- スライド区切り -->
+---
 
-<header><span>[スライドタイトル（日本語）]</span><span class="header-en">Issue</span></header>
+<header><span>[スライドタイトル]</span><span class="header-en">Issue</span></header>
 
 ## こんなことで困っていませんか？
 
@@ -69,9 +80,9 @@ sample_slide.pdf のデザインコンポーネントに対応しています。
 - [あるある課題 2行目]
 - [あるある課題 3行目]
 
-<!-- スライド区切り -->
+---
 
-<header><span>[スライドタイトル（日本語）]</span><span class="header-en">Pain</span></header>
+<header><span>[スライドタイトル]</span><span class="header-en">Pain</span></header>
 
 ## 課題の具体例
 
@@ -98,11 +109,9 @@ sample_slide.pdf のデザインコンポーネントに対応しています。
   </div>
 </div>
 
-<div class="guide">（書き方例）できれば「数字」や「頻度」を1つ入れると刺さります。</div>
+---
 
-<!-- スライド区切り -->
-
-<header><span>[スライドタイトル（日本語）]</span><span class="header-en">Conclusion</span></header>
+<header><span>[スライドタイトル]</span><span class="header-en">Conclusion</span></header>
 
 ## 結論（最初に一番言いたいこと）
 
@@ -115,9 +124,9 @@ sample_slide.pdf のデザインコンポーネントに対応しています。
 - [補足1]
 - [補足2]
 
-<!-- スライド区切り -->
+---
 
-<header><span>[スライドタイトル（日本語）]</span><span class="header-en">Context</span></header>
+<header><span>[スライドタイトル]</span><span class="header-en">Context</span></header>
 
 ## 背景・前提
 
@@ -129,9 +138,9 @@ sample_slide.pdf のデザインコンポーネントに対応しています。
 - [前提2]
 - [制約/条件]
 
-<!-- スライド区切り -->
+---
 
-<header><span>[スライドタイトル（日本語）]</span><span class="header-en">Approach</span></header>
+<header><span>[スライドタイトル]</span><span class="header-en">Approach</span></header>
 
 ## アプローチ全体像
 
@@ -146,29 +155,50 @@ sample_slide.pdf のデザインコンポーネントに対応しています。
     </ol>
   </div>
   <div>
-    <div class="guide">（図を置く場合）画像を置く / 簡単な表で整理する</div>
 
-    | 要素 | ねらい |
-    |---|---|
-    | [A] | [狙い] |
-    | [B] | [狙い] |
+<!-- 画像がある場合: fetch-image.sh で取得してパスを指定 -->
+<!-- fetch-image: "business strategy" 1 approach -->
+<!-- ![アプローチ図](assets/images/approach.jpg) -->
+
+<!-- 画像未準備の場合: 表で代替 -->
+| 要素 | ねらい |
+|---|---|
+| [A] | [狙い] |
+| [B] | [狙い] |
+| [C] | [狙い] |
+
   </div>
 </div>
 
-<!-- スライド区切り -->
+---
 
-<header><span>[スライドタイトル（日本語）]</span><span class="header-en">Point 1</span></header>
+<header><span>[スライドタイトル]</span><span class="header-en">Point 1</span></header>
 
 ## ポイント①：[見出し]
 
 <div class="slide-no">07</div>
 
-- [具体例]
-- [得られた効果]
+<!-- パターンA: テキスト＋画像（2カラム） -->
+<div class="cols">
+  <div>
 
-<!-- スライド区切り -->
+  - [具体例1]
+  - [具体例2]
+  - [得られた効果]
 
-<header><span>[スライドタイトル（日本語）]</span><span class="header-en">Point 2</span></header>
+  </div>
+  <div>
+
+<!-- fetch-image: "data visualization" 1 point1 -->
+<!-- ![説明](assets/images/point1.jpg) -->
+<div class="img-placeholder">📷 画像を配置<br><small>fetch-image.sh で取得</small></div>
+
+  </div>
+</div>
+
+---
+
+<header><span>[スライドタイトル]</span><span class="header-en">Point 2</span></header>
 
 ## ポイント②：[見出し]
 
@@ -177,9 +207,9 @@ sample_slide.pdf のデザインコンポーネントに対応しています。
 - [具体例]
 - [得られた効果]
 
-<!-- スライド区切り -->
+---
 
-<header><span>[スライドタイトル（日本語）]</span><span class="header-en">Point 3</span></header>
+<header><span>[スライドタイトル]</span><span class="header-en">Point 3</span></header>
 
 ## ポイント③：[見出し]
 
@@ -188,9 +218,9 @@ sample_slide.pdf のデザインコンポーネントに対応しています。
 - [具体例]
 - [得られた効果]
 
-<!-- スライド区切り -->
+---
 
-<header><span>[スライドタイトル（日本語）]</span><span class="header-en">Result</span></header>
+<header><span>[スライドタイトル]</span><span class="header-en">Result</span></header>
 
 ## Before / Action / After
 
@@ -238,42 +268,125 @@ sample_slide.pdf のデザインコンポーネントに対応しています。
   </div>
 </div>
 
-<!-- スライド区切り -->
+---
 
-<header><span>[スライドタイトル（日本語）]</span><span class="header-en">Use case</span></header>
+<header><span>[スライドタイトル]</span><span class="header-en">Performance</span></header>
 
-## 応用：実績サマリー
+## 実績サマリー
 
 <div class="slide-no">11</div>
 
-<div class="topic-cards">
-  <div class="topic-card">
-    <div class="tc-label">TOPIC 01</div>
-    <div class="tc-title">[トピック名1]</div>
-    <div class="tc-tag">[タグ1／タグ2／タグ3]</div>
-    <p>[内容説明。3〜4行を目安に。数値・成果があると◎]</p>
+<!--
+  グラフ or KPIカード を選択して使ってください。
+  SNIPPETS.md に棒グラフ・折れ線・ドーナツ等のサンプルあり。
+-->
+
+<!-- パターンA: KPIカード（数値を大きく見せる） -->
+<div class="kpi-cards">
+  <div class="kpi-card">
+    <div class="kpi-label">[指標名1]</div>
+    <div class="kpi-value">[値]<span class="kpi-unit">[単位]</span></div>
+    <div class="kpi-delta up">[前比較]</div>
   </div>
-  <div class="topic-card">
-    <div class="tc-label">TOPIC 02</div>
-    <div class="tc-title">[トピック名2]</div>
-    <div class="tc-tag">[タグ1／タグ2／タグ3]</div>
-    <p>[内容説明。3〜4行を目安に。]</p>
+  <div class="kpi-card accent">
+    <div class="kpi-label">[指標名2]</div>
+    <div class="kpi-value">[値]<span class="kpi-unit">[単位]</span></div>
+    <div class="kpi-delta up">[前比較]</div>
   </div>
-  <div class="topic-card">
-    <div class="tc-label">TOPIC 03</div>
-    <div class="tc-title">[トピック名3]</div>
-    <div class="tc-tag">[タグ1／タグ2／タグ3]</div>
-    <p>[内容説明。3〜4行を目安に。]</p>
+  <div class="kpi-card positive">
+    <div class="kpi-label">[指標名3]</div>
+    <div class="kpi-value">[値]<span class="kpi-unit">[単位]</span></div>
+    <div class="kpi-delta up">[前比較]</div>
   </div>
 </div>
 
-<!-- スライド区切り -->
+<!-- パターンB: KPIカード＋棒グラフ（SNIPPETS.md の SNIPPET 03 参照） -->
+<!-- パターンC: トピックカード（topic-cards） -->
 
-<header><span>[スライドタイトル（日本語）]</span><span class="header-en">Looking Ahead</span></header>
+---
+
+<header><span>[スライドタイトル]</span><span class="header-en">Data</span></header>
+
+## データ詳細
+
+<div class="slide-no">12</div>
+
+<!--
+  表とグラフを横並びにするレイアウト例。
+  片方だけでも使えます。
+-->
+
+<div class="cols">
+  <div>
+
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>[項目]</th>
+      <th class="num">[目標]</th>
+      <th class="num">[実績]</th>
+      <th class="num">[達成率]</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>[行1]</td>
+      <td class="num">[値]</td>
+      <td class="num">[値]</td>
+      <td class="num"><span class="badge over">[%]</span></td>
+    </tr>
+    <tr>
+      <td>[行2]</td>
+      <td class="num">[値]</td>
+      <td class="num">[値]</td>
+      <td class="num"><span class="badge meet">[%]</span></td>
+    </tr>
+  </tbody>
+</table>
+
+  </div>
+  <div>
+
+<!-- グラフを右カラムに配置（SNIPPETS.md SNIPPET 03 参照） -->
+<div class="chart-wrap" style="height:200px">
+  <canvas id="summaryChart"></canvas>
+</div>
+<script>
+(function() {
+  function init() {
+    if (typeof Chart === 'undefined') { setTimeout(init, 100); return; }
+    const primary = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim() || '#1e2d6e';
+    const accent  = getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim()  || '#2ab4b4';
+    new Chart(document.getElementById('summaryChart'), {
+      type: 'bar',
+      data: {
+        labels: ['[項目1]', '[項目2]'],
+        datasets: [{ label: '達成率', data: [100, 100], backgroundColor: [primary, accent], borderRadius: 3 }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { min: 0, max: 150, ticks: { callback: v => v + '%', font: { size: 10 } }, grid: { color: '#e0e4ee' } },
+          x: { ticks: { font: { size: 10 } }, grid: { display: false } }
+        }
+      }
+    });
+  }
+  init();
+})();
+</script>
+
+  </div>
+</div>
+
+---
+
+<header><span>[スライドタイトル]</span><span class="header-en">Looking Ahead</span></header>
 
 ## 下半期に向けた展望
 
-<div class="slide-no">12</div>
+<div class="slide-no">13</div>
 
 <div class="vision-label">VISION 01　[ビジョン名1]</div>
 <div class="vision-block">[一言で表すビジョン]</div>
@@ -287,13 +400,13 @@ sample_slide.pdf のデザインコンポーネントに対応しています。
 <div class="vision-block">[一言で表すビジョン]</div>
 <div class="vision-note">[補足説明]</div>
 
-<!-- スライド区切り -->
+---
 
-<header><span>[スライドタイトル（日本語）]</span><span class="header-en">Next Action</span></header>
+<header><span>[スライドタイトル]</span><span class="header-en">Next Action</span></header>
 
 ## まとめ：明日からできること
 
-<div class="slide-no">13</div>
+<div class="slide-no">14</div>
 
 <span class="label tips">TIPS</span>
 
@@ -301,12 +414,12 @@ sample_slide.pdf のデザインコンポーネントに対応しています。
 2. [明日からやること②]
 3. [明日からやること③]
 
-<!-- スライド区切り -->
+---
 
-<header><span>[スライドタイトル（日本語）]</span><span class="header-en">Questions</span></header>
+<header><span>[スライドタイトル]</span><span class="header-en">Questions</span></header>
 
 ## Q&A
 
-<div class="slide-no">14</div>
+<div class="slide-no">15</div>
 
 ご清聴ありがとうございました。

@@ -7,42 +7,55 @@
 
 ---
 
-## 2. 参照ファイル
+## 2. 参照ファイル一覧
 
-| ファイル | 用途 |
-|---|---|
-| `GEMINI.md` | AIへの指示・コンポーネント一覧・カスタマイズ方法 |
-| `themes/base.css` | sample_slide.pdf 準拠のベースデザイン（触らない） |
-| `themes/project.css` | プロジェクトごとの配色・フォント上書き（ここだけ編集） |
-| `templates/base-slide.md` | 14枚LTの型テンプレート |
+| ファイル | 用途 | 編集可否 |
+|---|---|---|
+| `GEMINI.md` | AIへの指示・全コンポーネント記法・変数一覧 | 読み取り専用 |
+| `themes/base.css` | sample_slide.pdf 準拠のベースデザイン | **触らない** |
+| `themes/charts.css` | グラフ・KPIカード・表・画像レイアウト | **触らない** |
+| `themes/project.css` | プロジェクトごとの配色・フォント上書き | **ここだけ編集** |
+| `templates/base-slide.md` | 14〜15枚LTの型テンプレート | コピーして使う |
+| `templates/SNIPPETS.md` | グラフ・KPI・表・画像のスニペット集 | コピーして使う |
+| `scripts/build.sh` | Markdown → PDF / HTML 変換 | 基本触らない |
+| `scripts/fetch-image.sh` | Unsplash API で画像を自動取得 | 基本触らない |
+| `.env` | APIキー管理（.env.example からコピー） | 各自設定 |
 
 ---
 
-## 3. 実行フロー
+## 3. 事前準備
+
+### Marp CLI のインストール
+
+```bash
+npm install -g @marp-team/marp-cli
+```
+
+### Unsplash API キーの設定（画像自動取得を使う場合のみ）
+
+```bash
+cp .env.example .env
+# .env を開き UNSPLASH_ACCESS_KEY=your_key_here を記入
+# キー取得先: https://unsplash.com/developers（無料・50リクエスト/時）
+```
+
+---
+
+## 4. 実行フロー
 
 ### ステップ1: プロジェクトのカスタマイズ（任意）
 
-`themes/project.css` を開き、使いたいカラーセットのコメントを外すだけです。
+`themes/project.css` の `:root` 内のコメントを外すだけで配色が切り替わります。
 
-```css
-/* themes/project.css の例: グリーンテーマに切り替え */
-:root {
-  --color-primary:    #1b4d35;
-  --color-accent:     #2d9e6b;
-  --color-background: #f4f9f5;
-  --deco-dot-1: #a8c9b4;
-  --deco-dot-2: #5baa80;
-  --deco-dot-3: #2d7a50;
-  --deco-dot-4: #1b4d35;
-}
-```
+| テーマ | primary | accent |
+|---|---|---|
+| ARK GRAPHICS（デフォルト） | `#1e2d6e` | `#2ab4b4` |
+| モノクロ / コーポレートグレー | `#1a1a1a` | `#5a5a5a` |
+| グリーン（環境・サステナ） | `#1b4d35` | `#2d9e6b` |
+| ウォームオレンジ | `#c0440a` | `#e87d3e` |
+| パープル（テック・AI） | `#3a1a6e` | `#7c3aed` |
 
-**プリセット一覧（GEMINI.md にも記載）:**
-- ARK GRAPHICS デフォルト（sample_slide.pdf 準拠）
-- モノクロ / コーポレートグレー
-- グリーン（環境・サステナビリティ）
-- ウォームオレンジ（スタートアップ・カジュアル）
-- パープル（テック・AI）
+完全なプリセット定義は `themes/project.css` のコメントを参照してください。
 
 ### ステップ2: トピックを決める
 
@@ -50,83 +63,104 @@
 /slide "開発組織におけるAI活用のはじめ方"
 ```
 
-> `/slide` はまず「14枚の構成案（番号付き）」だけを提示し、承認後に本文生成へ進みます。
+または直接テンプレートをコピー:
 
-**または、テンプレートを直接コピーして埋める方式:**
 ```bash
 cp templates/base-slide.md my-talk.md
 ```
 
-#### 生成される構成（LT 14〜15枚のアウトライン例）
+> `/slide` はまず「14〜15枚の構成案（番号付き）」だけを提示し、承認後に本文生成へ進みます。
 
-1. 表紙（タイトル / 氏名 / 所属）
-2. 今日話すこと（アジェンダ）
-3. 導入：問いかけ（あるある課題）
-4. 導入：課題の具体例（痛みの描写）
-5. 結論：一番伝えたいこと（1枚で）
-6. 本論：背景・前提（なぜそれが起きるか）
-7. 本論：アプローチ全体像（図 or 3点要約）
-8. 本論：ポイント①（具体例）
-9. 本論：ポイント②（具体例）
-10. 本論：ポイント③（具体例）
-11. Before / Action / Tips / After（施策と効果）
-12. 実績サマリー（TOPICカード3列）
-13. 展望（VISIONブロック）
-14. まとめ：明日からできること（Next Action）
-15. Q&A
+### ステップ3: グラフ・KPI・表・画像を組み込む
 
-### ステップ3: 生成された Markdown を微調整する
+`templates/SNIPPETS.md` からコピペします。
 
-- 事実関係や自社固有情報（数値・用語・体制）を追記
-- 1枚1メッセージになっているかを確認
-- コンポーネントの使い方は `GEMINI.md` の「コンポーネント一覧」を参照
-
-#### コンポーネント選択の目安
-
-| 伝えたい内容 | 使うコンポーネント |
+| 入れたい要素 | 参照スニペット |
 |---|---|
-| 課題の列挙 | `.issue-block` |
-| 施策と効果の流れ | `.step-list`（Before/Action/Tips/After） |
-| 3つのトピックをカード形式で | `.topic-cards` |
-| 将来の方向性 | `.vision-block` |
-| 3点比較（横並び） | `.cards`（Before/Action/After） |
-| 本文＋図表 | `.cols` |
-| 強調した番号付きリスト | `ol.highlight-list` |
+| 数値KPIカード | SNIPPET 01 |
+| 目標vs実績の表 | SNIPPET 02 |
+| 棒グラフ | SNIPPET 03 |
+| 折れ線＋ドーナツグラフ（2列） | SNIPPET 04 |
+| レーダー＋折れ線グラフ（2列） | SNIPPET 05 |
+| テキスト＋画像（2カラム） | SNIPPET 06 |
+| 背景画像スライド | SNIPPET 07 |
+| 円グラフ＋KPIカード | SNIPPET 08 |
 
-### ステップ4: PDF / HTML / PPTX を出力する
+### ステップ4: 画像ディレクティブを書く（オプション）
 
-#### PDF / HTML
-```bash
-# デフォルト: Marp組み込みテーマの影響を避けるため "default" テーマでビルド
-bash scripts/build.sh slide-deck.md
+Markdown に以下のコメントを書くと、`--fetch` ビルド時に自動取得できます。
 
-# もし gaia テーマも併用したい場合は明示指定
-bash scripts/build.sh --theme gaia slide-deck.md
+```markdown
+<!-- fetch-image: "technology abstract" -->
+<!-- fetch-image: "business meeting" 2 -->
+<!-- fetch-image: "night city skyline" 1 hero -->
+<!-- fetch-image: "green forest" 1 forest landscape -->
 ```
 
-#### PPTX（PowerPoint）
+| 引数 | 意味 | 省略時 |
+|---|---|---|
+| `"keyword"` | 検索キーワード（英語推奨） | 必須 |
+| `count` | 取得枚数（1〜10） | `1` |
+| `basename` | 保存ファイル名（拡張子なし） | キーワードから自動生成 |
+| `orientation` | `landscape` / `portrait` / `squarish` | `landscape` |
+
+保存先は `assets/images/<basename>.jpg`。スライド内での参照:
+
+```markdown
+![bg left:40%](assets/images/hero.jpg)
+![bg right opacity:.4](assets/images/hero.jpg)
+```
+
+画像取得のみを単独実行する場合:
+
+```bash
+bash scripts/fetch-image.sh "technology"
+bash scripts/fetch-image.sh "night city" 1 hero landscape
+```
+
+### ステップ5: ビルド
+
+```bash
+# 通常ビルド（PDF + HTML を dist/ に出力）
+bash scripts/build.sh slide-deck.md
+
+# 画像自動取得 → ビルドを一括実行
+bash scripts/build.sh slide-deck.md --fetch
+```
+
+#### PPTX（PowerPoint）出力
+
 ```bash
 mkdir -p slide
-marp slide-deck.md --pptx --allow-local-files --theme gaia \
+marp slide-deck.md --pptx --allow-local-files --theme default \
   --stylesheet themes/base.css \
+  --stylesheet themes/charts.css \
   --stylesheet themes/project.css \
   -o slide/slide-deck.pptx
 ```
 
-> Note: marp のPPTXは表現に制約があります。凝ったレイアウトはPDFの方が再現性が高いです。
+> Note: marp の PPTX は表現に制約があります。Chart.js グラフや複雑なレイアウトは
+> PDF の方が再現性が高いです。
 
 ---
 
-## 4. よくある質問
+## 5. よくある質問
 
 **Q. 配色だけ変えたい**
-→ `themes/project.css` の `:root` に変数を上書きするだけです。プリセットは `GEMINI.md` と `project.css` のコメントに記載されています。
+→ `themes/project.css` の `:root` に変数を上書きするだけです。`base.css` は触りません。
 
-**Q. フォントを変えたい**
-→ `themes/project.css` で `--font-family-main` と `--font-family-heading` を上書きします。Google Fonts 等を使う場合は `build.sh` に `@import` を追加してください。
+**Q. グラフの色が project.css のテーマ色に追従しない**
+→ Chart.js の `backgroundColor` に CSS 変数を使っているか確認してください。
+  `getComputedStyle(document.documentElement).getPropertyValue('--color-primary')` で取得するのが正しい書き方です（SNIPPETS.md のサンプル参照）。
 
-**Q. ロゴを入れたい**
-→ `themes/project.css` に追記するか、各スライドの `<header>` にHTMLで埋め込みます。
+**Q. PDF でグラフが空白になる**
+→ `build.sh` の `PDF_WAIT_MS` の値（デフォルト: 800ms）を増やしてください。
 
-**Q. コンポーネントの見た目を変えたい**
-→ `themes/project.css` に `.card`, `.issue-block` 等のスタイルを追記して上書きします。`themes/base.css` は編集しないでください。
+**Q. Unsplash に合う英語キーワードが思いつかない**
+→ AI に「このスライドに合う Unsplash 検索キーワードを英語で3つ提案して」と聞くのが早いです。
+
+**Q. 毎回違う画像になってしまう**
+→ `/photos/random` を使っているため意図的な仕様です。気に入ったファイルは上書きしないよう管理してください。
+
+**Q. 画像のクレジット表記は？**
+→ `assets/images/CREDITS.md` に自動記録されます。スライドのQ&Aページ等に転記することを推奨します（Unsplash ライセンスはクレジット任意ですが推奨されています）。

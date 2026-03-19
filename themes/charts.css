@@ -1,0 +1,311 @@
+/*
+ * charts.css — グラフ・KPIカード・データ可視化コンポーネント
+ *
+ * base.css / project.css と組み合わせて使用します。
+ * build.sh に --stylesheet themes/charts.css を追加してください。
+ *
+ * ── 収録コンポーネント ──────────────────────────────────────
+ *   .chart-wrap          : Chart.js canvas ラッパー
+ *   .kpi-cards           : KPIカード横並び（数値を大きく表示）
+ *   .kpi-card            : 個別KPIカード
+ *   .data-table          : sample_slide.pdf 準拠テーブル強化版
+ *   .callout             : 吹き出し風注釈（グラフ上のコールアウト）
+ *   .chart-title         : グラフタイトル（左ボーダー付き）
+ *   .two-charts          : 2グラフ横並びレイアウト
+ * ──────────────────────────────────────────────────────────
+ */
+
+/* ============================================================
+   Chart.js canvas ラッパー
+   ============================================================ */
+section .chart-wrap {
+  position: relative;
+  width: 100%;
+  margin-top: 12px;
+}
+
+section .chart-wrap canvas {
+  max-width: 100%;
+}
+
+/* ============================================================
+   2グラフ横並びレイアウト
+   ============================================================ */
+section .two-charts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+  margin-top: 12px;
+}
+
+section .chart-col {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================================
+   グラフタイトル（小見出し）
+   ============================================================ */
+section .chart-title {
+  font-size: 0.82em;
+  font-weight: 700;
+  color: var(--color-primary, #1e2d6e);
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+  padding-left: 8px;
+  border-left: 3px solid var(--color-accent, #2ab4b4);
+}
+
+/* ============================================================
+   吹き出しコールアウト（グラフ上の注釈）
+   sample_slide.pdf の「第5週：フィードバック導入後に引用増」風
+   ============================================================ */
+section .callout {
+  display: inline-block;
+  background: var(--color-primary, #1e2d6e);
+  color: #fff;
+  border-radius: 999px;
+  padding: 5px 14px;
+  font-size: 0.72em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+  position: relative;
+}
+
+section .callout::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid var(--color-primary, #1e2d6e);
+}
+
+section .callout.accent {
+  background: var(--color-accent, #2ab4b4);
+}
+section .callout.accent::after {
+  border-top-color: var(--color-accent, #2ab4b4);
+}
+
+/* ============================================================
+   KPIカード（数値を大きく表示）
+   ============================================================ */
+section .kpi-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-top: 14px;
+}
+
+section .kpi-cards.cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+section .kpi-cards.cols-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+section .kpi-card {
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border, #d6dce8);
+  border-top: 3px solid var(--color-primary, #1e2d6e);
+  border-radius: 4px;
+  padding: 14px 16px 12px;
+  box-shadow: 0 2px 12px rgba(30,45,110,0.07);
+}
+
+section .kpi-card.accent {
+  border-top-color: var(--color-accent, #2ab4b4);
+}
+section .kpi-card.positive {
+  border-top-color: #3fba89;
+}
+section .kpi-card.negative {
+  border-top-color: #e05a5a;
+}
+
+section .kpi-card .kpi-label {
+  font-size: 0.7em;
+  font-weight: 600;
+  color: var(--color-muted, #8892a4);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  font-family: var(--font-family-en, sans-serif);
+}
+
+section .kpi-card .kpi-value {
+  font-size: 2em;
+  font-weight: 800;
+  color: var(--color-primary, #1e2d6e);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-family: var(--font-family-en, sans-serif);
+}
+
+section .kpi-card.accent .kpi-value { color: var(--color-accent, #2ab4b4); }
+section .kpi-card.positive .kpi-value { color: #3fba89; }
+section .kpi-card.negative .kpi-value { color: #e05a5a; }
+
+section .kpi-card .kpi-unit {
+  font-size: 0.6em;
+  font-weight: 600;
+  color: var(--color-muted, #8892a4);
+  margin-left: 2px;
+}
+
+section .kpi-card .kpi-sub {
+  font-size: 0.72em;
+  color: var(--color-muted, #8892a4);
+  margin-top: 2px;
+}
+
+section .kpi-card .kpi-delta {
+  font-size: 0.75em;
+  font-weight: 700;
+  margin-top: 4px;
+}
+section .kpi-card .kpi-delta.up   { color: #3fba89; }
+section .kpi-card .kpi-delta.down { color: #e05a5a; }
+section .kpi-card .kpi-delta.up::before   { content: "▲ "; }
+section .kpi-card .kpi-delta.down::before { content: "▼ "; }
+
+/* ============================================================
+   データテーブル強化版（sample_slide.pdf 準拠）
+   ============================================================ */
+section .data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82em;
+  margin-top: 12px;
+}
+
+section .data-table th {
+  background: var(--color-primary, #1e2d6e);
+  color: #fff;
+  padding: 8px 14px;
+  text-align: left;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  font-family: var(--font-family-en, sans-serif);
+}
+
+section .data-table th.accent { background: var(--color-accent, #2ab4b4); }
+
+section .data-table td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--color-border, #d6dce8);
+  color: var(--color-foreground, #2c2c2c);
+  vertical-align: middle;
+}
+
+section .data-table tr:nth-child(even) td {
+  background: #f0f3f8;
+}
+
+/* 数値セル（右寄せ） */
+section .data-table td.num,
+section .data-table th.num {
+  text-align: right;
+  font-family: var(--font-family-en, sans-serif);
+  font-weight: 700;
+}
+
+/* 達成率バッジ */
+section .data-table .badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.85em;
+  font-weight: 700;
+  font-family: var(--font-family-en, sans-serif);
+}
+section .data-table .badge.over   { background: #dcf5eb; color: #1a8a50; }
+section .data-table .badge.meet   { background: #dceeff; color: #1a4a8a; }
+section .data-table .badge.under  { background: #fde8e8; color: #a02020; }
+
+/* ============================================================
+   画像レイアウト（Marp インライン画像 / fetch-image.sh 連携）
+   ============================================================ */
+
+/* .cols 内のインライン画像: コンテナ幅いっぱいに広がる */
+section .cols img,
+section .cols-half img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+/* 高さが指定された画像コンテナ内では object-fit で切り抜き */
+section .img-wrap {
+  overflow: hidden;
+  border-radius: 4px;
+}
+section .img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* img-placeholder: 高さを cols 内での使用に合わせてレスポンシブに */
+section .img-placeholder {
+  background: #e8ecf5;
+  border: 2px dashed var(--color-border, #d6dce8);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-muted, #8892a4);
+  font-size: 0.78em;
+  font-style: italic;
+  min-height: 140px;
+  height: 100%;
+  text-align: center;
+  padding: 16px;
+  gap: 6px;
+}
+
+/* ============================================================
+   テーブルレイアウト補助
+   ============================================================ */
+
+/* .cols 内のテーブル: 左カラムに表、右カラムにグラフ等 */
+section .cols .data-table,
+section .cols table {
+  margin-top: 0;
+}
+
+/* テーブルとグラフの横並びレイアウト */
+section .table-chart {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+  margin-top: 12px;
+}
+
+/* ============================================================
+   グラフ内テキスト注釈（コールアウト改善）
+   ============================================================ */
+
+/* コールアウトをグラフの上に重ねる用途に対応 */
+section .chart-col {
+  position: relative;
+}
+
+section .callout-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}

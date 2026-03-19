@@ -2,7 +2,8 @@
 
 このファイルは、AI（Gemini CLI / Claude Code など）がこのリポジトリで作業する際に守るべき **前提** と **運用ルール** をまとめたものです。
 
-> スライドの「ベース構成（14枚LTの型）」は `templates/base-slide.md` で管理します。
+> スライドの「ベース構成（14〜15枚LTの型）」は `templates/base-slide.md` で管理します。
+> グラフ・KPI・表・画像のスニペットは `templates/SNIPPETS.md` を参照してください。
 
 ---
 
@@ -14,6 +15,7 @@
 
 ### 成果物の扱い
 - `dist/` や `slide/` の生成物は **git管理しない**（`.gitignore` で除外）
+- `assets/images/` の取得画像も同様にgit管理しない
 - 作業用の一時生成物も同様にgit管理しない
 
 ---
@@ -21,20 +23,39 @@
 ## 2. スライド生成の基本ルール（共通）
 
 ### スライドの型（base slide）
-- **14枚LTの標準構成**は `templates/base-slide.md` を参照し、並び・章立てを基本的に崩さない
+- **14〜15枚LTの標準構成**は `templates/base-slide.md` を参照し、並び・章立てを基本的に崩さない
 - 迷ったら `templates/base-slide.md` をコピーして埋める運用を優先
 
 ### Marp Markdown の最低要件
-- Marp CLIで解釈可能な形式で出力する
-- スライド区切りは `<!-- スライド区切り -->` を使う
-- 先頭に `marp: true` を含むフロントマターを置く
+- Marp CLI で解釈可能な形式で出力する
+- **スライド区切りは `---`（Marp 正式記法）を使う**
+- 先頭フロントマターに必ず `marp: true` と `theme: default` を含める
+- グラフを使うスライドがある場合はフロントマター直下に Chart.js CDN を記載する
+
+```markdown
+---
+marp: true
+theme: default
+paginate: true
+---
+
+<!-- Chart.js CDN（グラフを使う場合のみ） -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+```
+
+### テーマについて
+- **`theme: default` を必ず使う**
+- `theme: gaia` / `theme: uncover` 等は独自スタイルが強く、`base.css` のカスタマイズが効かなくなるため使用禁止
 
 ---
 
 ## 3. デザインルール（sample_slide.pdf 準拠）
 
-`themes/base.css` が **sample_slide.pdf のデザインを忠実に再現** したベーススタイルです。
-`themes/project.css` でプロジェクトごとにカスタマイズします。
+CSS の読み込み順: `base.css` → `charts.css` → `project.css`（build.sh が自動処理）
+
+- `themes/base.css` — sample_slide.pdf のデザインを忠実に再現したベーススタイル（**触らない**）
+- `themes/charts.css` — グラフ・KPIカード・表・画像レイアウト用スタイル（**触らない**）
+- `themes/project.css` — プロジェクトごとの配色・フォント上書き（**ここだけ編集**）
 
 ### カラートークン（:root 変数）
 
@@ -66,6 +87,7 @@
 ## 4. コンポーネント一覧
 
 AIはスライドを生成する際、以下のコンポーネントを優先して使うこと。
+グラフ・KPI・表・画像の詳細スニペットは `templates/SNIPPETS.md` を参照。
 
 ### ① ページヘッダーバー
 ```html
@@ -153,11 +175,16 @@ AIはスライドを生成する際、以下のコンポーネントを優先し
 
 ### ⑩ 2カラムレイアウト
 ```html
+<!-- .cols       : テキスト多め（左57% / 右43%）← デフォルト -->
+<!-- .cols-half  : 均等2列（50% / 50%）-->
+<!-- .cols-right : 画像メイン（左40% / 右60%）-->
+<!-- .cols-wide  : 本文広め（左65% / 右35%）-->
 <div class="cols">
-  <div>左カラム</div>
-  <div>右カラム</div>
+  <div>左カラム（テキスト・リスト・表）</div>
+  <div>右カラム（画像・グラフ）</div>
 </div>
 ```
+→ 画像を右に大きく見せたい場合は `cols-right`、左右均等なら `cols-half` を使う
 
 ### ⑪ 番号付き強調リスト
 ```html
@@ -166,8 +193,92 @@ AIはスライドを生成する際、以下のコンポーネントを優先し
 </ol>
 ```
 
-### ⑫ タイトルスライド専用クラス
-```md
+### ⑫ KPIカード（charts.css）
+```html
+<div class="kpi-cards">
+  <div class="kpi-card">
+    <div class="kpi-label">指標名</div>
+    <div class="kpi-value">13<span class="kpi-unit">件</span></div>
+    <div class="kpi-delta up">目標比 130%</div>
+  </div>
+</div>
+```
+→ `kpi-card` の修飾クラス: `accent` / `positive` / `negative`
+→ 詳細・バリエーションは `templates/SNIPPETS.md` SNIPPET 01 参照
+
+### ⑬ データテーブル（charts.css）
+```html
+<table class="data-table">
+  <thead><tr><th>項目</th><th class="num">目標</th><th class="num">実績</th></tr></thead>
+  <tbody>
+    <tr><td>内容</td><td class="num">10</td><td class="num"><span class="badge over">130%</span></td></tr>
+  </tbody>
+</table>
+```
+→ `badge` クラス: `over`（超過・緑）/ `meet`（達成・青）/ `under`（未達・赤）
+→ 詳細は `templates/SNIPPETS.md` SNIPPET 02 参照
+
+### ⑭ グラフ（Chart.js / charts.css）
+```html
+<div class="chart-wrap" style="height:280px">
+  <canvas id="myChart"></canvas>
+</div>
+<script>
+(function() {
+  function init() {
+    if (typeof Chart === 'undefined') { setTimeout(init, 100); return; }
+    const primary = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim() || '#1e2d6e';
+    const accent  = getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim()  || '#2ab4b4';
+    new Chart(document.getElementById('myChart'), {
+      type: 'bar', // bar / line / doughnut / pie / radar
+      data: { labels: [...], datasets: [{ data: [...], backgroundColor: primary }] },
+      options: { responsive: true, maintainAspectRatio: false }
+    });
+  }
+  init();
+})();
+</script>
+```
+→ 棒・折れ線・ドーナツ・円・レーダーの完全サンプルは `templates/SNIPPETS.md` SNIPPET 03〜05・08 参照
+→ **Chart.js の色は必ず CSS 変数から取得**し、ハードコードしない（project.css の色変更に追従させるため）
+
+### ⑮ 画像配置（fetch-image.sh 連携）
+```html
+<!-- 2カラム内に配置する場合 -->
+<div class="cols">
+  <div>テキスト・リスト</div>
+  <div>
+    <!-- fetch-image: "business meeting" 1 hero -->
+    <!-- 取得後: -->
+    ![説明](assets/images/hero.jpg)
+  </div>
+</div>
+
+<!-- 背景画像 -->
+<!-- _backgroundImage: url(assets/images/hero.jpg) -->
+<!-- _backgroundOpacity: 0.15 -->
+```
+→ `fetch-image:` ディレクティブを書いておくと `build.sh --fetch` で自動取得
+→ 画像未準備時はプレースホルダーで代替: `<div class="img-placeholder">📷 説明</div>`
+→ 詳細は `templates/SNIPPETS.md` SNIPPET 06・07 参照
+
+### ⑯ 2グラフ横並びレイアウト（charts.css）
+```html
+<div class="two-charts">
+  <div class="chart-col">
+    <div class="chart-title">左グラフタイトル</div>
+    <div class="callout">注釈テキスト</div>
+    <div class="chart-wrap" style="height:220px"><canvas id="chart1"></canvas></div>
+  </div>
+  <div class="chart-col">
+    <div class="chart-title">右グラフタイトル</div>
+    <div class="chart-wrap" style="height:220px"><canvas id="chart2"></canvas></div>
+  </div>
+</div>
+```
+
+### ⑰ タイトルスライド専用クラス
+```markdown
 <!-- _class: title-slide -->
 # タイトル
 <div class="title-subtitle">サブタイトル</div>
@@ -175,22 +286,47 @@ AIはスライドを生成する際、以下のコンポーネントを優先し
 <div class="title-meta">作成者：名前　作成日：日付</div>
 ```
 
-### ⑬ セクション区切りスライド専用クラス
-```md
+### ⑱ セクション区切りスライド専用クラス
+```markdown
 <!-- _class: section-slide -->
 <div class="sec-no">01</div>
----
+<hr>
 ## セクション名
 ```
 
-### ⑭ 書き方ガイド（編集時メモ、出力後は削除）
+### ⑲ 書き方ガイド（編集時メモ、出力後は削除）
 ```html
 <div class="guide">（書き方例）ここに編集メモを書く</div>
 ```
 
 ---
 
-## 5. カスタマイズ方法（project.css）
+## 5. コンテンツとコンポーネントの対応表
+
+| 伝えたい内容 | 使うコンポーネント |
+|---|---|
+| 数値KPIを大きく見せる | `kpi-cards` / `kpi-card` |
+| 目標vs実績の表 | `data-table`（バッジ付き） |
+| 時系列の推移 | 折れ線グラフ（SNIPPET 04・05） |
+| 比率・構成比 | ドーナツ・円グラフ（SNIPPET 04・08） |
+| 複数指標の比較 | レーダーチャート（SNIPPET 05） |
+| 達成率の比較 | 棒グラフ（SNIPPET 03） |
+| 課題の列挙 | `issue-block` |
+| 施策と効果の流れ | `step-list`（Before/Action/Tips/After） |
+| 3つのトピックをカードで | `topic-cards` |
+| 将来の方向性 | `vision-block` |
+| テキスト＋画像（テキスト多め） | `cols` + `img` |
+| テキスト＋画像（均等） | `cols-half` + `img` |
+| テキスト＋画像（画像メイン） | `cols-right` + `img` |
+| 画像未準備の仮置き | `cols` + `img-placeholder` |
+| 背景に画像を薄く敷く | `_backgroundImage` + `_backgroundOpacity` |
+| 3点比較（横並び） | `cards`（Before/Action/After） |
+| 本文＋図表 | `cols` / `cols-half` |
+| 強調した番号付きリスト | `ol.highlight-list` |
+
+---
+
+## 6. カスタマイズ方法（project.css）
 
 `themes/project.css` の `:root { }` 内に変数を上書きするだけ。
 
@@ -206,20 +342,23 @@ AIはスライドを生成する際、以下のコンポーネントを優先し
 
 ### 例: グリーンテーマに切り替える場合
 ```css
+/* themes/project.css */
 :root {
   --color-primary:    #1b4d35;
   --color-accent:     #2d9e6b;
   --color-background: #f4f9f5;
-  --deco-dot-1: #a8c9b4;
-  --deco-dot-2: #5baa80;
-  --deco-dot-3: #2d7a50;
-  --deco-dot-4: #1b4d35;
+}
+
+/* ドットデコレーションも合わせて変更（SVGのためCSS変数は使えず直接上書き） */
+section {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='20'%3E%3Crect x='0'  y='4' width='10' height='10' fill='%23a8c9b4'/%3E%3Crect x='14' y='4' width='10' height='10' fill='%235baa80'/%3E%3Crect x='28' y='4' width='10' height='10' fill='%232d7a50'/%3E%3Crect x='42' y='4' width='10' height='10' fill='%231b4d35'/%3E%3C/svg%3E");
 }
 ```
+→ `%23` は `#` のURLエンコード。各プリセットの値は `project.css` のコメントを参照してください。
 
 ---
 
-## 6. コマンド運用
+## 7. コマンド運用
 
 - カスタムコマンド定義は `.gemini/commands/` に置く
 - 例: `/slide "トピック"`（詳細は `.gemini/commands/slide.md`）

@@ -70,24 +70,49 @@
 
 /* ============================================================
    ベースセクション
+   theme: default 前提（gaiaテーマの強制スタイルを使わない）
    ============================================================ */
+
+/* Marp default テーマ向けリセット＆ベーススタイル */
 section {
+  /* レイアウト基盤 */
+  box-sizing: border-box;
+  display: block;
+  width: 1280px;
+  height: 720px;
+  overflow: hidden;
+  position: relative;
+
+  /* カラー・タイポグラフィ */
   font-family: var(--font-family-main);
   background-color: var(--color-background);
   color: var(--color-foreground);
+  font-size: 22px;
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+
+  /* パディング: ヘッダーバー分を上に確保 */
   padding: var(--slide-padding-y) var(--slide-padding-x);
   padding-top: calc(var(--slide-padding-y) + var(--header-height));
-  letter-spacing: 0.02em;
-  font-size: 0.92em;
-  line-height: 1.7;
-  position: relative;
 
-  /* 右上ドットデコレーション（SVGで描画） */
+  /* 右上ドットデコレーション（SVGインライン） */
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='20'%3E%3Crect x='0'  y='4' width='10' height='10' fill='%23b0b8cc'/%3E%3Crect x='14' y='4' width='10' height='10' fill='%237485aa'/%3E%3Crect x='28' y='4' width='10' height='10' fill='%233a5096'/%3E%3Crect x='42' y='4' width='10' height='10' fill='%231e2d6e'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: top 16px right var(--slide-padding-x);
   background-size: 60px 20px;
 }
+
+/* ── ドットデコレーション色の上書き方法（project.css に記載） ──────────────
+   SVG インライン画像のため CSS 変数を直接参照できません。
+   project.css でテーマ色を変えた場合は、以下のように background-image ごと
+   上書きしてください（%23 は # のURLエンコード）:
+
+   section {
+     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='20'%3E%3Crect x='0'  y='4' width='10' height='10' fill='%23YOURCOLOR1'/%3E%3Crect x='14' y='4' width='10' height='10' fill='%23YOURCOLOR2'/%3E%3Crect x='28' y='4' width='10' height='10' fill='%23YOURCOLOR3'/%3E%3Crect x='42' y='4' width='10' height='10' fill='%23YOURCOLOR4'/%3E%3C/svg%3E");
+   }
+
+   各プリセットの値は project.css のコメントを参照してください。
+   ──────────────────────────────────────────────────────────────────── */
 
 /* ============================================================
    ページヘッダーバー
@@ -339,6 +364,10 @@ section .vision-title {
 
 /* ============================================================
    コンポーネント: 2カラムレイアウト
+   ─ .cols        : テキスト多め（左 57% / 右 43%）デフォルト
+   ─ .cols-half   : 均等2列（50% / 50%）
+   ─ .cols-right  : 画像メイン（左 40% / 右 60%）
+   ─ .cols-wide   : 本文広め（左 65% / 右 35%）
    ============================================================ */
 section .cols {
   display: grid;
@@ -350,6 +379,20 @@ section .cols {
 section .cols-half {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+section .cols-right {
+  display: grid;
+  grid-template-columns: 0.67fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+section .cols-wide {
+  display: grid;
+  grid-template-columns: 1.86fr 1fr;
   gap: 24px;
   align-items: start;
 }
@@ -448,7 +491,7 @@ section .topic-card .tc-label {
   margin-bottom: 6px;
 }
 section .topic-card:nth-child(2) .tc-label { color: var(--color-accent); }
-section .topic-card:nth-child(3) .tc-label { color: #5a7de0; }
+section .topic-card:nth-child(3) .tc-label { color: var(--color-vision); }
 
 section .topic-card .tc-title {
   font-weight: 700;
@@ -457,7 +500,7 @@ section .topic-card .tc-title {
   margin-bottom: 6px;
 }
 section .topic-card:nth-child(2) .tc-title { color: var(--color-accent); }
-section .topic-card:nth-child(3) .tc-title { color: #5a7de0; }
+section .topic-card:nth-child(3) .tc-title { color: var(--color-vision); }
 
 section .topic-card .tc-tag {
   display: inline-block;
@@ -471,7 +514,7 @@ section .topic-card .tc-tag {
   letter-spacing: 0.04em;
 }
 section .topic-card:nth-child(2) .tc-tag { background: var(--color-accent); }
-section .topic-card:nth-child(3) .tc-tag { background: #5a7de0; }
+section .topic-card:nth-child(3) .tc-tag { background: var(--color-vision); }
 
 section .topic-card p {
   font-size: 0.82em;

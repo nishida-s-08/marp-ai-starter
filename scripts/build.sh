@@ -4,126 +4,133 @@
 #
 # MarpのMarkdownファイルをPDFおよびHTML形式に変換するスクリプト
 #
-# 使い方:
-#   ./build.sh <markdown_file>
+# ─── 使い方 ──────────────────────────────────────────────────────────────────
 #
-# 例:
-#   ./build.sh slide-deck.md
+#   # 通常ビルド
+#   bash scripts/build.sh slide-deck.md
 #
-# 依存関係:
-#   - marp-cli: `npm install -g @marp-team/marp-cli` でインストールしてください
-#   - カスタムテーマ用のローカル `style.css` ファイル
+#   # 画像取得 → ビルドを一括実行
+#   bash scripts/build.sh slide-deck.md --fetch
+#
+# ─── --fetch モードの書き方 ───────────────────────────────────────────────────
+#
+#   Markdown に以下のコメントを書くと、ビルド前に自動ダウンロードします:
+#
+#   <!-- fetch-image: "technology abstract" -->
+#   <!-- fetch-image: "business team" 2 -->
+#   <!-- fetch-image: "night city" 1 hero -->
+#   <!-- fetch-image: "forest" 2 forest landscape -->
+#
+#   保存先: assets/images/<basename>.jpg
+#   スライド内参照: ![bg](assets/images/hero.jpg)
+#
+# ─── 依存関係 ─────────────────────────────────────────────────────────────────
+#
+#   - marp-cli:  npm install -g @marp-team/marp-cli
+#   - (--fetch): curl, jq, UNSPLASH_ACCESS_KEY (.env または 環境変数)
+#
+# ─────────────────────────────────────────────────────────────────────────────
 
-# --- 設定/引数解析 ---
-# デフォルトは "default" テーマ（= gaia等の組み込みテーマCSSを使わない）
-# 必要な場合のみ --theme で明示的に指定する。
-THEME="default"
+set -euo pipefail
 
-usage() {
-  cat <<'USAGE'
-MarpのMarkdownファイルをPDFおよびHTML形式に変換します。
+GREEN='\033[0;32m'
+CYAN='\033[0;36m'
+RED='\033[0;31m'
+NC='\033[0m'
+log_info()    { echo -e "${CYAN}[INFO]${NC}  $*"; }
+log_success() { echo -e "${GREEN}[OK]${NC}    $*"; }
+log_error()   { echo -e "${RED}[ERROR]${NC} $*" >&2; }
 
-使い方:
-  bash scripts/build.sh [--theme <theme>] <markdown_file>
+# ── 引数パース ───────────────────────────────────────────────────────────────
+INPUT_FILE="${1:-}"
+DO_FETCH=false
+for arg in "$@"; do [ "${arg}" = "--fetch" ] && DO_FETCH=true; done
 
-例:
-  bash scripts/build.sh slide-deck.md
-  bash scripts/build.sh --theme gaia slide-deck.md
-
-Note:
-  - テーマ未指定時は "default" を使用します。
-  - CSSは themes/base.css を必ず読み込み、themes/project.css があれば追加で読み込みます。
-USAGE
-}
-
-INPUT_FILE=""
-while [[ $# -gt 0 ]]; do
-  case "$1" in
-    --theme)
-      shift
-      THEME="$1"
-      shift
-      ;;
-    -h|--help)
-      usage
-      exit 0
-      ;;
-    --)
-      shift
-      break
-      ;;
-    -*)
-      echo "エラー: 不明なオプション: $1"
-      usage
-      exit 1
-      ;;
-    *)
-      INPUT_FILE="$1"
-      shift
-      ;;
-  esac
-done
-
-# 入力ファイルが指定されていない場合は終了
-if [ -z "${INPUT_FILE}" ]; then
-  echo "エラー: 入力Markdownファイルが指定されていません。"
-  usage
+if [ -z "${INPUT_FILE}" ] || [ "${INPUT_FILE}" = "--fetch" ]; then
+  echo "使い方: $0 <markdown_file> [--fetch]"
   exit 1
 fi
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 REPO_ROOT=$(cd "${SCRIPT_DIR}/.." && pwd)
-
 OUTPUT_NAME=$(basename "${INPUT_FILE}" .md)
 OUTPUT_DIR="${REPO_ROOT}/dist"
 BASE_CSS_FILE="${REPO_ROOT}/themes/base.css"
+CHARTS_CSS_FILE="${REPO_ROOT}/themes/charts.css"
 PROJECT_CSS_FILE="${REPO_ROOT}/themes/project.css"
+FETCH_SCRIPT="${REPO_ROOT}/scripts/fetch-image.sh"
+# theme: default を使用（gaiaはスタイルを強制上書きするためカスタマイズが効かない）
+THEME="default"
+# PDF出力時にChart.jsの描画完了を待つミリ秒数
+PDF_WAIT_MS=800
 
-# --- 検証 ---
-# 入力ファイルの存在確認
 if [ ! -f "${INPUT_FILE}" ]; then
-    echo "エラー: ファイル '${INPUT_FILE}' が見つかりません。"
-    exit 1
+  log_error "ファイル '${INPUT_FILE}' が見つかりません。"; exit 1
+fi
+if ! command -v marp &>/dev/null; then
+  log_error "'marp' コマンドが見つかりません。"
+  echo "  npm install -g @marp-team/marp-cli"; exit 1
 fi
 
-# marp-cliのインストール確認
-if ! command -v marp &> /dev/null; then
-    echo "エラー: 'marp' コマンドが見つかりません。"
-    echo "次のコマンドで marp-cli をグローバルにインストールしてください:"
-    echo "npm install -g @marp-team/marp-cli"
-    exit 1
+# ═══════════════════════════════════════════════════════════════════════════════
+# --fetch: Markdown内のコメントから画像を自動取得
+# ═══════════════════════════════════════════════════════════════════════════════
+if [ "${DO_FETCH}" = true ]; then
+  if [ ! -f "${FETCH_SCRIPT}" ]; then
+    log_error "fetch-image.sh が見つかりません: ${FETCH_SCRIPT}"; exit 1
+  fi
+
+  log_info "fetch-image ディレクティブを検索中..."
+  FETCH_DIRECTIVES=$(grep -oE '<!-- fetch-image: [^>]+ -->' "${INPUT_FILE}" || true)
+
+  if [ -z "${FETCH_DIRECTIVES}" ]; then
+    log_info "fetch-image コメントなし。スキップします。"
+  else
+    FETCH_COUNT=$(echo "${FETCH_DIRECTIVES}" | wc -l | tr -d ' ')
+    log_info "${FETCH_COUNT} 件検出。画像を取得します..."
+    echo ""
+    while IFS= read -r directive; do
+      INNER=$(echo "${directive}" | sed 's/<!-- fetch-image: //;s/ -->//')
+      KEYWORD=$(echo "${INNER}" | grep -oE '"[^"]+"' | head -1 | tr -d '"')
+      REST=$(echo "${INNER}" | sed 's/"[^"]*"//' | tr -s ' ')
+      ARG2=$(echo "${REST}" | awk '{print $1}')
+      ARG3=$(echo "${REST}" | awk '{print $2}')
+      ARG4=$(echo "${REST}" | awk '{print $3}')
+      [ -z "${KEYWORD}" ] && continue
+      bash "${FETCH_SCRIPT}" "${KEYWORD}" "${ARG2:-1}" "${ARG3:-}" "${ARG4:-landscape}"
+    done <<< "${FETCH_DIRECTIVES}"
+  fi
+  echo ""
 fi
 
-# --- ビルドプロセス ---
-echo "${INPUT_FILE} のビルドプロセスを開始します..."
-echo "Theme: ${THEME}"
-
-# 出力ディレクトリが存在しない場合は作成
+# ═══════════════════════════════════════════════════════════════════════════════
+# ビルド
+# ═══════════════════════════════════════════════════════════════════════════════
+log_info "${INPUT_FILE} のビルドを開始します..."
 mkdir -p "${OUTPUT_DIR}"
 
-# --- CSS設定 ---
 STYLESHEET_ARGS=("--stylesheet" "${BASE_CSS_FILE}")
+# charts.css: グラフ・KPIカード・表・画像レイアウト用スタイル
+if [ -f "${CHARTS_CSS_FILE}" ]; then
+  STYLESHEET_ARGS+=("--stylesheet" "${CHARTS_CSS_FILE}")
+fi
+# project.css: プロジェクトごとのカラー・フォント上書き（任意）
 if [ -f "${PROJECT_CSS_FILE}" ]; then
   STYLESHEET_ARGS+=("--stylesheet" "${PROJECT_CSS_FILE}")
 fi
 
-# --- PDF生成 ---
-echo "PDFを生成中: ${OUTPUT_DIR}/${OUTPUT_NAME}.pdf"
+log_info "PDF を生成中: ${OUTPUT_DIR}/${OUTPUT_NAME}.pdf"
 marp "${INPUT_FILE}" \
-    --allow-local-files \
-    --html \
-    --theme "${THEME}" \
-    "${STYLESHEET_ARGS[@]}" \
-    --pdf -o "${OUTPUT_DIR}/${OUTPUT_NAME}.pdf"
+  --allow-local-files --html --theme "${THEME}" \
+  "${STYLESHEET_ARGS[@]}" \
+  --pdf --wait "${PDF_WAIT_MS}" \
+  -o "${OUTPUT_DIR}/${OUTPUT_NAME}.pdf"
 
-# --- HTML生成 ---
-echo "HTMLを生成中: ${OUTPUT_DIR}/${OUTPUT_NAME}.html"
+log_info "HTML を生成中: ${OUTPUT_DIR}/${OUTPUT_NAME}.html"
 marp "${INPUT_FILE}" \
-    --allow-local-files \
-    --html \
-    --theme "${THEME}" \
-    "${STYLESHEET_ARGS[@]}" \
-    -o "${OUTPUT_DIR}/${OUTPUT_NAME}.html"
+  --allow-local-files --html --theme "${THEME}" \
+  "${STYLESHEET_ARGS[@]}" \
+  -o "${OUTPUT_DIR}/${OUTPUT_NAME}.html"
 
 echo ""
-echo "ビルドが完了しました。ファイルは '${OUTPUT_DIR}' ディレクトリにあります。"
+log_success "ビルド完了 → ${OUTPUT_DIR}/"

@@ -46,3 +46,4 @@ yarn-error.log*
 # (Optional: If the project wants to keep templates only, but usually SAA roadmap etc. are okay to keep)
 # *-roadmap.md
 # my-*.md
+documents/

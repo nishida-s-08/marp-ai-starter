@@ -28,11 +28,13 @@ cp .env.example .env
 ## スライド生成ワークフロー
 
 ### 1. AI による構成案とドラフトの生成
-Gemini CLI 等のチャットで、トピックを指定してコマンドを実行します。
+`documents/` に参考資料（PDFやテキスト）を配置しておくと、AIが内容を読み取ってスライドに反映します。
+
+その後、チャットでトピックを指定してコマンドを実行します。
 ```bash
 /slide "生成AIが変えるソフトウェア開発の未来"
 ```
-AIが構成案（目次）を提示します。内容に合意すると、**`slides/`** ディレクトリに Markdown ファイル（例: `future-of-ai-dev.md`）が書き出されます。
+AIが構成案（目次）を提示します。内容に合意すると、**`slides/`** ディレクトリに Markdown ファイルが書き出されます。
 
 ### 2. ユーザーによる修正（★重要）
 生成された `slides/filename.md` をエディタで開き、内容をレビュー・修正します。
@@ -53,7 +55,8 @@ bash scripts/build.sh slides/filename.md --fetch
 ```
 marp-ai-starter/
 ├── .gemini/commands/   # AI用カスタムコマンド定義（/slide 等）
-├── slides/             # [Git除外] スライド作業場。AIがここに出力します
+├── documents/          # [Git除外] スライド生成用の参考資料（PDF・テキスト）
+├── slides/             # [Git除外] スライド作業場。AIがここに出力
 ├── themes/             # スタイルシート（ビルド時に自動統合）
 │   ├── base.css        # 基本デザイン（編集禁止）
 │   ├── charts.css      # コンポーネント用（編集禁止）

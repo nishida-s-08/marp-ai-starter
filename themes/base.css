@@ -1213,6 +1213,48 @@ section .mt-16  { margin-top: 16px; }
 section .divider       { border: none; border-top: 1px solid var(--color-border-light); margin: 11px 0; }
 section .divider.accent{ border-top: 1px solid rgba(6,182,212,0.30); }
 
+/* ================================================================
+   【再発防止】本文テキストサイズ セーフガード
+   ─ section 基準は 21px。説明文・箇条書きはこのクラスか
+     コンポーネント (.check-list / .highlight-list) を使うこと。
+   ================================================================ */
+
+/* .body-text: 通常の説明文・段落に使う標準サイズ */
+section .body-text {
+  font-size: 0.85em;
+  line-height: 1.80;
+}
+
+/* .body-text-sm: 密度の高いコンテンツや補足説明に */
+section .body-text-sm {
+  font-size: 0.80em;
+  line-height: 1.72;
+}
+
+/* cols / cols-half 内の ul ol は自動的に縮小 */
+section .cols ul,
+section .cols ol,
+section .cols-half ul,
+section .cols-half ol,
+section .cols-right ul,
+section .cols-right ol,
+section .cols-wide ul,
+section .cols-wide ol {
+  font-size: 0.85em;
+  line-height: 1.78;
+}
+
+/* cols 内でさらにネストしたテキスト段落も縮小 */
+section .cols p,
+section .cols-half p,
+section .cols-right p,
+section .cols-wide p {
+  font-size: 0.85em;
+  line-height: 1.78;
+  margin-top: 0.4em;
+  margin-bottom: 0.4em;
+}
+
 /* ── タイトルスライド追加 ── */
 section.title-slide .label { opacity: 0.90; }
 

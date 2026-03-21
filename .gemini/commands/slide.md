@@ -28,10 +28,20 @@ AI（あなた）は以下のステップに従って、ユーザーと対話し
 
 #### 【リッチ・デザイン・ガイドライン】
 1. **フロントマター**: `templates/base-slide.md` の設定を継承し、`Chart.js` のCDNタグを必ず含めること。
-2. **ビジュアルの予約**: 画像が必要な場所には必ず `` を挿入する。
+2. **ビジュアルの予約**: 画像が必要な場所には必ず `<div class="img-placeholder">` を挿入する。`<img src="...">` タグは画像ファイルが確実に存在する場合のみ使用し、存在しない場合は絶対に使わない。
 3. **情報の構造化**: 単なる箇条書きを避け、`GEMINI.md` で定義されたコンポーネント（`.cols`, `.kpi-card`, `.step-list`等）をHTMLタグで直接記述する。
 4. **タイポグラフィ**: スライドタイトル下には `<header>` タグで英語表記を添える（例: `<header><span>概要</span><span class="header-en">Overview</span></header>`）。
 5. **Chart.js の活用**: 統計データが含まれる場合、`SNIPPETS.md` から最適なグラフ（棒・円・折れ線）のスクリプトをコピーし、データをトピックに合わせて調整して出力する。
+
+#### 【🚨 3大バグ再発防止チェックリスト — ドラフト生成前に必ず確認】
+
+| # | チェック項目 | NG例 | OK例 |
+|---|---|---|---|
+| **①** | フロントマターに `marp: true` と `theme: ark-base` があるか | `theme:` が抜けている | `marp: true` / `theme: ark-base` / `paginate: true` の3行が揃っている |
+| **②** | 画像を `<img src="">` タグで直書きしていないか | `<img src="assets/images/hero.jpg">` | `![bg left:40%](assets/images/hero.jpg)` またはファイル未確定なら `<div class="img-placeholder">` |
+| **③** | 説明文・箇条書きのフォントサイズが大きすぎないか | `<li>` や `<div>` をサイズ指定なしで記述 | コンポーネント（`.check-list`, `.highlight-list`）を使用、または親要素に `style="font-size:0.85em"` を付与 |
+
+**⚠️ 上記③の補足**: `section` の基準フォントサイズは21pxです。`<ul>/<ol>` や `<div>` の本文テキストはこのサイズがそのまま適用されます。説明文には必ず `font-size: 0.82em〜0.88em` を明示的に指定してください。
 
 - ファイル名ルール: 英小文字・数字・ハイフンのみ（例: `future-ai-dev.md`）
 - `write_file` を使用して保存してください。

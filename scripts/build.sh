@@ -59,8 +59,6 @@ BASE_CSS_FILE="${REPO_ROOT}/themes/base.css"
 CHARTS_CSS_FILE="${REPO_ROOT}/themes/charts.css"
 PROJECT_CSS_FILE="${REPO_ROOT}/themes/project.css"
 FETCH_SCRIPT="${REPO_ROOT}/scripts/fetch-image.sh"
-# theme: default を使用（gaiaはスタイルを強制上書きするためカスタマイズが効かない）
-THEME="default"
 # PDF出力時にChart.jsの描画完了を待つミリ秒数
 PDF_WAIT_MS=800
 
@@ -109,26 +107,28 @@ fi
 log_info "${INPUT_FILE} のビルドを開始します..."
 mkdir -p "${OUTPUT_DIR}"
 
-STYLESHEET_ARGS=("--stylesheet" "${BASE_CSS_FILE}")
-# charts.css: グラフ・KPIカード・表・画像レイアウト用スタイル
+# base.css は /* @theme ark-base */ 宣言を持つカスタムテーマのため --theme で直接指定する。
+# charts.css / project.css は base.css に追加注入するスタイルとして --stylesheet で渡す。
+STYLESHEET_ARGS=()
 if [ -f "${CHARTS_CSS_FILE}" ]; then
   STYLESHEET_ARGS+=("--stylesheet" "${CHARTS_CSS_FILE}")
 fi
-# project.css: プロジェクトごとのカラー・フォント上書き（任意）
 if [ -f "${PROJECT_CSS_FILE}" ]; then
   STYLESHEET_ARGS+=("--stylesheet" "${PROJECT_CSS_FILE}")
 fi
 
 log_info "PDF を生成中: ${OUTPUT_DIR}/${OUTPUT_NAME}.pdf"
 marp "${INPUT_FILE}" \
-  --allow-local-files --html --theme "${THEME}" \
+  --allow-local-files --html \
+  --theme "${BASE_CSS_FILE}" \
   "${STYLESHEET_ARGS[@]}" \
   --pdf --wait "${PDF_WAIT_MS}" \
   -o "${OUTPUT_DIR}/${OUTPUT_NAME}.pdf"
 
 log_info "HTML を生成中: ${OUTPUT_DIR}/${OUTPUT_NAME}.html"
 marp "${INPUT_FILE}" \
-  --allow-local-files --html --theme "${THEME}" \
+  --allow-local-files --html \
+  --theme "${BASE_CSS_FILE}" \
   "${STYLESHEET_ARGS[@]}" \
   -o "${OUTPUT_DIR}/${OUTPUT_NAME}.html"
 

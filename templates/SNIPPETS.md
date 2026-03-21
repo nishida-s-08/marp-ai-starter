@@ -26,10 +26,13 @@ paginate: true
   SNIPPET 06  画像 + テキスト 2カラム（バリアント付き）
   SNIPPET 07  背景画像スライド
   SNIPPET 08  パイチャート + KPIカード
-  SNIPPET 09  ★NEW プログレスバー + stat-row ダッシュボード
-  SNIPPET 10  ★NEW 横棒グラフ（ランキング）
-  SNIPPET 11  ★NEW 複合グラフ（棒 + 折れ線）
-  SNIPPET 12  ★NEW data-insight + timeline まとめスライド
+  SNIPPET 09  ★ プログレスバー + stat-row ダッシュボード
+  SNIPPET 10  ★ 横棒グラフ（ランキング）
+  SNIPPET 11  ★ 複合グラフ（棒 + 折れ線）
+  SNIPPET 12  ★ data-insight + timeline まとめスライド
+  SNIPPET 13  ★ 比較カード（Before / After）         ← NEW
+  SNIPPET 14  ★ アイコン付き3カラム説明               ← NEW
+  SNIPPET 15  ★ 引用ブロック（大引用 / 横並び小引用）  ← NEW
 
 ━━ Chart.js カラーパレット（Modern Edition 準拠） ━━━━━━━━━
   CSS変数から取得するため project.css のカラー変更に自動追従。
@@ -989,8 +992,220 @@ paginate: true
 
 ---
 
+<!-- =====================================================
+     SNIPPET 13: ★NEW 比較カード（Before / After）
+     現状課題と改善後を左右で対比する
+     用途: 課題解決・施策効果・プロセス改善スライド
+     ===================================================== -->
+
+<header><span>施策の効果</span><span class="header-en">Before / After</span></header>
+
+## 導入前後の変化
+
+<div class="callout-wrap">
+  <span class="callout accent">✨ 3つのプロセスすべてで改善を確認</span>
+</div>
+
+<div class="compare-wrap">
+  <div class="compare-card before">
+    <div class="cc-badge">Before</div>
+    <div class="cc-title">導入前の課題</div>
+    <ul>
+      <li>[手作業が多く、週X時間を消費していた]</li>
+      <li>[担当者ごとに品質がバラバラ]</li>
+      <li>[承認フローが不透明で、遅延が常態化]</li>
+      <li>[データ集計に半日かかる場合があった]</li>
+    </ul>
+  </div>
+
+  <div class="compare-arrow">→</div>
+
+  <div class="compare-card after">
+    <div class="cc-badge">After</div>
+    <div class="cc-title">改善後の状態</div>
+    <ul>
+      <li>[自動化により工数をX時間→Y時間に削減]</li>
+      <li>[テンプレート統一でアウトプット品質が安定]</li>
+      <li>[承認ステータスをリアルタイムで可視化]</li>
+      <li>[集計がダッシュボードで即時確認可能に]</li>
+    </ul>
+  </div>
+</div>
+
+<div class="stat-row" style="margin-top:14px;">
+  <div class="stat-item highlight">
+    <div class="stat-num">[X]<span style="font-size:.45em;font-weight:400;color:var(--color-muted)">h/月</span></div>
+    <div class="stat-label">工数削減</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">[X]<span style="font-size:.5em;font-weight:400;color:var(--color-muted)">%</span></div>
+    <div class="stat-label">品質向上</div>
+  </div>
+  <div class="stat-item highlight-warm">
+    <div class="stat-num">[X]<span style="font-size:.5em;font-weight:400;color:var(--color-muted)">x</span></div>
+    <div class="stat-label">ROI</div>
+  </div>
+</div>
+
+---
+
+<!-- =====================================================
+     SNIPPET 14: ★NEW アイコン付き3カラム説明
+     特徴・強み・手順を視覚的に整理する
+     用途: 価値提案・機能紹介・アプローチ説明スライド
+     .icon-cols.cols-2 / .cols-3（デフォルト）/ .cols-4 で列数を変更可
+     ===================================================== -->
+
+<header><span>アプローチの特徴</span><span class="header-en">Key Features</span></header>
+
+## 3つのアプローチ
+
+<div class="callout-wrap">
+  <span class="callout primary">🎯 すべての施策が相互補完的に機能</span>
+</div>
+
+<div class="icon-cols">
+  <div class="icon-col">
+    <span class="ic-icon">🔍</span>
+    <div class="ic-title">[特徴・機能名1]</div>
+    <div class="ic-body">[この特徴が何をどう解決するか、具体的に2〜3文で説明。数値があれば積極的に入れる。]</div>
+    <span class="ic-badge">[キーワード1]</span>
+  </div>
+
+  <div class="icon-col">
+    <span class="ic-icon">⚡</span>
+    <div class="ic-title">[特徴・機能名2]</div>
+    <div class="ic-body">[この特徴が何をどう解決するか、具体的に2〜3文で説明。数値があれば積極的に入れる。]</div>
+    <span class="ic-badge">[キーワード2]</span>
+  </div>
+
+  <div class="icon-col">
+    <span class="ic-icon">📈</span>
+    <div class="ic-title">[特徴・機能名3]</div>
+    <div class="ic-body">[この特徴が何をどう解決するか、具体的に2〜3文で説明。数値があれば積極的に入れる。]</div>
+    <span class="ic-badge">[キーワード3]</span>
+  </div>
+</div>
+
+<div class="data-insight" style="margin-top:14px;">
+  <div class="di-icon">💡</div>
+  <div class="di-text">3つの施策を組み合わせることで、単独実施の<strong>[X]倍</strong>の効果が見込まれる。</div>
+</div>
+
 <!--
-╔══════════════════════════════════════════════════════════════════════╗
+  バリアント: 2カラムの場合
+  <div class="icon-cols cols-2"> ... </div>
+
+  バリアント: 4カラムの場合（テキストは短めに）
+  <div class="icon-cols cols-4"> ... </div>
+-->
+
+---
+
+<!-- =====================================================
+     SNIPPET 15: ★NEW 引用ブロック（Blockquote）
+     パターンA: 大引用カード（.bq-card）ダーク背景・インパクト重視
+     パターンB: 横並び小引用（.bq-row > .bq-mini）ライト背景・複数声
+     用途: 顧客の声・データ出典・専門家コメント・受賞コメントスライド
+     ===================================================== -->
+
+<!-- パターンA: 大引用カード（1件の強力な声・データを強調する場合） -->
+
+<header><span>受賞コメント</span><span class="header-en">Testimonial</span></header>
+
+## お客様の声
+
+<div class="cols">
+  <div>
+    <div class="bq-card">
+      <span class="bq-quote-mark">"</span>
+      <div class="bq-text">[引用文をここに記述。インパクトのある1〜2文。「〇〇が△△になった」など具体的な変化・数値を入れると説得力が増す。]</div>
+      <div class="bq-source">
+        <div class="bq-avatar">👤</div>
+        <div>
+          <div class="bq-name">[氏名 / 職種]</div>
+          <div class="bq-role">[会社名・部署・役職]</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="kpi-cards cols-2" style="margin-top:0; gap:10px;">
+      <div class="kpi-card positive">
+        <div class="kpi-label">[成果指標1]</div>
+        <div class="kpi-value">[値]<span class="kpi-unit">[単位]</span></div>
+        <div class="kpi-delta up">[前期比]</div>
+      </div>
+      <div class="kpi-card accent">
+        <div class="kpi-label">[成果指標2]</div>
+        <div class="kpi-value">[値]<span class="kpi-unit">[単位]</span></div>
+        <div class="kpi-delta up">[前期比]</div>
+      </div>
+    </div>
+    <div class="data-insight success" style="margin-top:12px;">
+      <div class="di-icon">✅</div>
+      <div class="di-text"><strong>[主要な成果]</strong>が特に高く評価されている。</div>
+    </div>
+  </div>
+</div>
+
+---
+
+<!-- パターンB: 横並び小引用 2〜3件（複数の声を並べて信頼性を高める場合） -->
+
+<header><span>参加者の声</span><span class="header-en">Participant Feedback</span></header>
+
+## 参加者フィードバック
+
+<div class="callout-wrap">
+  <span class="callout accent">⭐ 平均満足度 4.7 / 5.0（回答率 88%）</span>
+</div>
+
+<div class="bq-row cols-3">
+  <div class="bq-mini">
+    <div class="bq-text">[参加者の声1。具体的な感想や変化を1〜2文で。「〇〇ができるようになった」など行動変容が伝わると効果的。]</div>
+    <div class="bq-source">
+      <div>
+        <div class="bq-name">[氏名 / 役職]</div>
+        <div class="bq-role">[部署名]</div>
+      </div>
+      <div class="bq-stars">★★★★★</div>
+    </div>
+  </div>
+
+  <div class="bq-mini">
+    <div class="bq-text">[参加者の声2。異なる視点からの感想が並ぶと多様な効果が伝わる。定量的な変化（時間・数値）があれば強調する。]</div>
+    <div class="bq-source">
+      <div>
+        <div class="bq-name">[氏名 / 役職]</div>
+        <div class="bq-role">[部署名]</div>
+      </div>
+      <div class="bq-stars">★★★★★</div>
+    </div>
+  </div>
+
+  <div class="bq-mini">
+    <div class="bq-text">[参加者の声3。改善要望や今後への期待を含む声も信頼性を高める。次のアクションへの布石としても使える。]</div>
+    <div class="bq-source">
+      <div>
+        <div class="bq-name">[氏名 / 役職]</div>
+        <div class="bq-role">[部署名]</div>
+      </div>
+      <div class="bq-stars">★★★★☆</div>
+    </div>
+  </div>
+</div>
+
+<!--
+  バリアント: 2カラムの場合
+  <div class="bq-row"> ... </div>  （デフォルトが cols-2）
+
+  .bq-mini の bq-stars は任意。削除しても問題なし。
+-->
+
+---
+
+<!--
 ║  Chart.js カラーパレット 完全リファレンス                            ║
 ║  コピペしてそのまま使えるカラー設定                                  ║
 ╚══════════════════════════════════════════════════════════════════════╝

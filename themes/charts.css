@@ -485,3 +485,372 @@ section .trend-table .tt-flat { color: var(--color-muted,#7c87a0); }
 section .trend-table .tt-up::before   { content: "▲ "; font-size: 0.78em; }
 section .trend-table .tt-down::before { content: "▼ "; font-size: 0.78em; }
 section .trend-table .tt-flat::before { content: "— "; }
+
+/* ================================================================
+   ★NEW SNIPPET 13: 比較カード（Before / After）
+   ─ .compare-wrap > .compare-card.before + .compare-arrow + .compare-card.after
+   ================================================================ */
+section .compare-wrap {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 0;
+  align-items: stretch;
+  margin-top: 11px;
+}
+
+section .compare-card {
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border-light, #eef1f8);
+  border-radius: var(--radius-lg, 8px);
+  padding: 16px 20px 14px;
+  box-shadow: var(--shadow-card, 0 1px 3px rgba(15,31,92,.06), 0 4px 16px rgba(15,31,92,.08));
+  position: relative;
+  overflow: hidden;
+}
+
+/* 上部カラーバー */
+section .compare-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: var(--radius-lg, 8px) var(--radius-lg, 8px) 0 0;
+}
+
+section .compare-card.before::before {
+  background: linear-gradient(90deg, var(--color-muted, #7c87a0), #9daec4);
+}
+section .compare-card.after::before {
+  background: var(--grad-accent, linear-gradient(135deg, #06b6d4, #0891b2));
+  box-shadow: 0 0 14px rgba(6,182,212,0.38);
+}
+
+/* グロス光沢 */
+section .compare-card::after {
+  content: '';
+  position: absolute;
+  top: 3px; left: 0; right: 0;
+  height: 38%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.50) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+section .compare-card .cc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-family-en, sans-serif);
+  font-size: 0.60em;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 2px 10px;
+  border-radius: 999px;
+  margin-bottom: 10px;
+}
+
+section .compare-card.before .cc-badge {
+  background: rgba(124, 135, 160, 0.10);
+  color: var(--color-muted, #7c87a0);
+  border: 1px solid rgba(124,135,160,0.24);
+}
+section .compare-card.after .cc-badge {
+  background: rgba(6, 182, 212, 0.10);
+  color: var(--color-accent, #06b6d4);
+  border: 1px solid rgba(6,182,212,0.28);
+}
+
+section .compare-card .cc-title {
+  font-size: 0.91em;
+  font-weight: 700;
+  color: var(--color-primary, #0f1f5c);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+section .compare-card.before .cc-title { color: var(--color-muted, #7c87a0); }
+section .compare-card.after  .cc-title { color: var(--color-accent, #06b6d4); }
+
+section .compare-card ul {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+  font-size: 0.81em;
+  line-height: 1.68;
+  color: var(--color-foreground, #1a1f36);
+}
+section .compare-card ul li {
+  padding-left: 1.3em;
+  position: relative;
+  margin-bottom: 3px;
+}
+section .compare-card.before ul li::before {
+  content: '✕';
+  position: absolute;
+  left: 0;
+  color: var(--color-muted, #7c87a0);
+  font-size: 0.85em;
+  font-weight: 700;
+}
+section .compare-card.after ul li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--color-accent, #06b6d4);
+  font-weight: 700;
+}
+
+/* 中央の矢印 */
+section .compare-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 14px;
+  font-size: 1.5em;
+  color: var(--color-accent, #06b6d4);
+  filter: drop-shadow(0 0 6px rgba(6,182,212,0.40));
+  flex-shrink: 0;
+}
+
+/* ================================================================
+   ★NEW SNIPPET 14: アイコン付き3カラム説明
+   ─ .icon-cols > .icon-col × 3
+   ================================================================ */
+section .icon-cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 13px;
+}
+
+section .icon-cols.cols-2 { grid-template-columns: repeat(2, 1fr); }
+section .icon-cols.cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+section .icon-col {
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border-light, #eef1f8);
+  border-radius: var(--radius-xl, 12px);
+  padding: 20px 18px 16px;
+  box-shadow: var(--shadow-card, 0 1px 3px rgba(15,31,92,.06), 0 4px 16px rgba(15,31,92,.08));
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+/* 底辺ラインアクセント */
+section .icon-col::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 20%; right: 20%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-accent, #06b6d4), transparent);
+  border-radius: 999px;
+  opacity: 0.55;
+}
+
+section .icon-col:nth-child(2)::after { background: linear-gradient(90deg, transparent, var(--color-primary, #0f1f5c), transparent); }
+section .icon-col:nth-child(3)::after { background: linear-gradient(90deg, transparent, var(--color-accent-warm, #f59e0b), transparent); }
+section .icon-col:nth-child(4)::after { background: linear-gradient(90deg, transparent, var(--color-tips, #10b981), transparent); }
+
+section .icon-col .ic-icon {
+  font-size: 2.1em;
+  line-height: 1;
+  margin-bottom: 10px;
+  display: block;
+  /* アイコン下グロー */
+  filter: drop-shadow(0 2px 8px rgba(6,182,212,0.22));
+}
+
+section .icon-col .ic-title {
+  font-size: 0.88em;
+  font-weight: 800;
+  color: var(--color-primary, #0f1f5c);
+  margin-bottom: 7px;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+section .icon-col .ic-body {
+  font-size: 0.76em;
+  color: var(--color-foreground, #1a1f36);
+  line-height: 1.68;
+}
+
+section .icon-col .ic-badge {
+  display: inline-block;
+  margin-top: 9px;
+  font-size: 0.62em;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-family: var(--font-family-en, sans-serif);
+  letter-spacing: 0.07em;
+}
+section .icon-col:nth-child(1) .ic-badge { background: rgba(6,182,212,0.10);  color: var(--color-accent, #06b6d4);      border: 1px solid rgba(6,182,212,0.26);  }
+section .icon-col:nth-child(2) .ic-badge { background: rgba(15,31,92,0.08);   color: var(--color-primary, #0f1f5c);    border: 1px solid rgba(15,31,92,0.16);   }
+section .icon-col:nth-child(3) .ic-badge { background: rgba(245,158,11,0.10); color: var(--color-accent-warm, #d97706); border: 1px solid rgba(245,158,11,0.26); }
+section .icon-col:nth-child(4) .ic-badge { background: rgba(16,185,129,0.10); color: var(--color-tips, #059669);        border: 1px solid rgba(16,185,129,0.26); }
+
+/* ================================================================
+   ★NEW SNIPPET 15: 引用ブロック（Blockquote）
+   ─ .bq-wrap > .bq-card（大引用） / .bq-row（横並び小引用）
+   ================================================================ */
+
+/* 大引用カード（ダーク背景 / スポットライト型） */
+section .bq-card {
+  background: var(--grad-primary, linear-gradient(135deg, #0f1f5c, #1e3a8a));
+  border-radius: var(--radius-xl, 12px);
+  padding: 22px 28px 20px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-card-lg, 0 2px 8px rgba(15,31,92,.08), 0 16px 48px rgba(15,31,92,.13));
+  margin-top: 11px;
+}
+
+/* 右上シアングロースポット */
+section .bq-card::before {
+  content: '';
+  position: absolute;
+  top: -50px; right: -50px;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(6,182,212,0.18) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* 左辺グローライン */
+section .bq-card::after {
+  content: '';
+  position: absolute;
+  left: 0; top: 16%; bottom: 16%;
+  width: 3px;
+  background: linear-gradient(180deg, transparent, var(--color-accent, #06b6d4), transparent);
+  border-radius: 99px;
+  box-shadow: 0 0 14px rgba(6,182,212,0.55);
+}
+
+section .bq-card .bq-quote-mark {
+  font-family: var(--font-family-display, Georgia, serif);
+  font-size: 4em;
+  line-height: 0.7;
+  color: var(--color-accent, #06b6d4);
+  opacity: 0.55;
+  margin-bottom: 6px;
+  display: block;
+  letter-spacing: -0.04em;
+}
+
+section .bq-card .bq-text {
+  font-size: 1.02em;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.55;
+  letter-spacing: 0.01em;
+  margin-bottom: 14px;
+}
+
+section .bq-card .bq-source {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+section .bq-card .bq-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(6,182,212,0.22);
+  border: 1px solid rgba(6,182,212,0.42);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1em;
+  flex-shrink: 0;
+}
+
+section .bq-card .bq-name {
+  font-size: 0.76em;
+  font-weight: 700;
+  color: rgba(255,255,255,0.86);
+  font-family: var(--font-family-en, sans-serif);
+  letter-spacing: 0.04em;
+}
+
+section .bq-card .bq-role {
+  font-size: 0.64em;
+  color: rgba(255,255,255,0.46);
+  font-family: var(--font-family-en, sans-serif);
+  margin-top: 1px;
+}
+
+/* 横並び小引用カード（ライト背景） */
+section .bq-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-top: 11px;
+}
+
+section .bq-row.cols-3 { grid-template-columns: repeat(3, 1fr); }
+
+section .bq-mini {
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border-light, #eef1f8);
+  border-radius: var(--radius-lg, 8px);
+  padding: 14px 16px 12px;
+  box-shadow: var(--shadow-card, 0 1px 3px rgba(15,31,92,.06), 0 4px 16px rgba(15,31,92,.08));
+  position: relative;
+  overflow: hidden;
+}
+
+/* 左上クォートマーク装飾 */
+section .bq-mini::before {
+  content: '"';
+  position: absolute;
+  top: -4px; left: 10px;
+  font-family: var(--font-family-display, Georgia, serif);
+  font-size: 3.5em;
+  color: var(--color-accent, #06b6d4);
+  opacity: 0.13;
+  line-height: 1;
+  pointer-events: none;
+}
+
+section .bq-mini .bq-text {
+  font-size: 0.80em;
+  color: var(--color-foreground, #1a1f36);
+  line-height: 1.65;
+  font-style: italic;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+section .bq-mini .bq-source {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border-top: 1px solid var(--color-border-light, #eef1f8);
+  padding-top: 8px;
+}
+
+section .bq-mini .bq-name {
+  font-size: 0.70em;
+  font-weight: 700;
+  color: var(--color-primary, #0f1f5c);
+  font-family: var(--font-family-en, sans-serif);
+}
+
+section .bq-mini .bq-role {
+  font-size: 0.62em;
+  color: var(--color-muted, #7c87a0);
+  margin-top: 1px;
+}
+
+/* スターレーティング */
+section .bq-mini .bq-stars {
+  font-size: 0.72em;
+  color: var(--color-accent-warm, #f59e0b);
+  letter-spacing: 1px;
+  margin-left: auto;
+}
